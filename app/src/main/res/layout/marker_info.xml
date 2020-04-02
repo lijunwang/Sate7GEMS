@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/marker_info_bg"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/info_tag"
+        style="@style/MarkerInfo"
+        android:gravity="center"
+        android:text="@string/track"
+        tools:text="北京测试" />
+
+    <TextView
+        android:id="@+id/info_imei"
+        style="@style/MarkerInfo"
+        android:text="@string/track"
+        tools:text="43042119881074336" />
+
+    <TextView
+        android:id="@+id/info_location"
+        style="@style/MarkerInfo"
+
+        android:text="@string/track"
+        tools:text="经度:122.365 纬度:365.2541" />
+
+    <TextView
+        android:id="@+id/info_number"
+        style="@style/MarkerInfo"
+        android:text="15096092544" />
+
+    <TextView
+        android:id="@+id/info_update"
+        style="@style/MarkerInfo"
+        tools:text="2020-3-25 10:25" />
+    <include
+        android:id="@+id/bottoms"
+        layout="@layout/marker_buttoms" />
+
+</LinearLayout>

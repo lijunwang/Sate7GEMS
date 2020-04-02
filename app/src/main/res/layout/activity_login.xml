@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="userInfo"
+            type="com.sate7.wlj.developerreader.sate7gems.User" />
+        <variable
+            name="loginViewMode"
+            type="com.sate7.wlj.developerreader.sate7gems.viewmodel.LoginViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:scaleType="fitXY"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:src="@drawable/sate7"
+            app:layout_constraintBottom_toTopOf="@id/login_company_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/login_company_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:text="@string/company_name"
+            android:textColor="@color/colorBlue1"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/login_user" />
+
+        <ImageView
+            android:id="@+id/login_user_png"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/login_margin_left"
+            android:src="@drawable/login_username"
+            app:layout_constraintBottom_toBottomOf="@id/login_user"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/login_user" />
+
+        <EditText
+            android:id="@+id/login_user"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/login_margin_left_add"
+            android:layout_marginRight="@dimen/login_margin_right"
+            android:hint="@string/name_hint"
+            android:text="@={loginViewMode.userName,default=`qx_admin`}"
+            app:layout_constraintBottom_toTopOf="@id/login_pwd"
+            app:layout_constraintLeft_toRightOf="@id/login_user_png"
+            tools:text="qx_admin" />
+
+        <EditText
+            android:id="@+id/login_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/login_margin_left_add"
+            android:layout_marginRight="@dimen/login_margin_right"
+            android:hint="@string/pwd_hint"
+            android:text="@={loginViewMode.password,default=`qx`}"
+            app:layout_constraintBottom_toTopOf="@id/login_remember"
+            app:layout_constraintLeft_toRightOf="@id/login_pwd_png"
+            tools:text="qx" />
+
+        <ImageView
+            android:id="@+id/login_pwd_png"
+            android:layout_width="@dimen/login_icon_width"
+            android:layout_height="@dimen/login_icon_height"
+            android:layout_marginLeft="@dimen/login_margin_left"
+            android:src="@drawable/login_pwd"
+            app:layout_constraintBottom_toTopOf="@id/login_remember"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/login_remember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/login_margin_top_big"
+            app:layout_constraintBottom_toTopOf="@+id/login_login"
+            app:layout_constraintLeft_toLeftOf="@id/login_pwd_png"
+            app:layout_constraintRight_toRightOf="@id/login_pwd_png" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remember_pwd"
+            app:layout_constraintBottom_toBottomOf="@id/login_remember"
+            app:layout_constraintLeft_toRightOf="@+id/login_remember"
+            app:layout_constraintTop_toTopOf="@id/login_remember" />
+
+        <Button
+            android:id="@+id/login_login"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/login_margin_left"
+            android:layout_marginTop="@dimen/login_margin_top_big"
+            android:layout_marginRight="@dimen/login_margin_right"
+            android:background="@color/colorBlue2"
+            android:text="@string/login"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            android:onClick="@{()->loginViewMode.login()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/login_wechat"
+            android:layout_width="@dimen/login_wechat_width"
+            android:layout_height="@dimen/login_wechat_height"
+            android:layout_marginTop="@dimen/login_margin_top_middle"
+            android:src="@drawable/web"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/login_login" />
+
+        <TextView
+            android:id="@+id/login_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/login_margin_top_small"
+            android:gravity="center"
+            android:text="@string/sate7_number"
+            app:layout_constraintTop_toBottomOf="@id/login_wechat" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/login_margin_top_small"
+            android:gravity="center"
+            android:text="@string/sate7_web"
+            app:layout_constraintTop_toBottomOf="@id/login_number" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

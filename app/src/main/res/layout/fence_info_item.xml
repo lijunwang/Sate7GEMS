@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="fence"
+            type="com.sate7.wlj.developerreader.sate7gems.net.bean.FenceListBean.DataBean.FenceBean" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/qmui_config_color_gray_9"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/fenceName"
+            android:layout_marginLeft="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/fenceEnd"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/fenceStart"
+            android:text="@{fence.name}"
+            tools:text="太平洋" />
+
+        <TextView
+            android:id="@+id/fenceStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintLeft_toRightOf="@id/fenceName"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@{fence.startDate}"
+            tools:text="2020-3-10" />
+
+        <TextView
+            android:id="@+id/fenceEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/fenceStart"
+            app:layout_constraintTop_toBottomOf="@id/fenceStart"
+            android:text="@{fence.endDate}"
+            tools:text="2020-3-30" />
+
+        <LinearLayout
+            android:id="@+id/fenceToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/fenceEnd"
+            app:layout_constraintLeft_toRightOf="@id/fenceStart"
+            app:layout_constraintTop_toTopOf="@id/fenceStart">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="@string/device"
+                app:layout_constraintBottom_toBottomOf="@id/fenceEnd"
+                app:layout_constraintLeft_toRightOf="@id/fenceStart"
+                app:layout_constraintTop_toTopOf="@id/fenceStart" />
+
+            <ImageView
+                android:id="@+id/fenceToggleImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/open" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

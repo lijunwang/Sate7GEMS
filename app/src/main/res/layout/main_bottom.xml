@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bottom_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <com.sate7.wlj.developerreader.sate7gems.view.TabView
+            android:id="@+id/tabLocation"
+            style="@style/TableItem"
+            app:tabColor="@color/colorPrimaryDark"
+            app:tabImage="@mipmap/tab_button_location_nor"
+            app:tabSelectedImage="@mipmap/tab_button_location_sel"
+            app:tabTitle="@string/bottom_location" />
+
+        <com.sate7.wlj.developerreader.sate7gems.view.TabView
+            android:id="@+id/tabWarning"
+            style="@style/TableItem"
+            app:tabColor="@color/colorPrimaryDark"
+            app:tabImage="@mipmap/tab_button_alarm_nor"
+            app:tabSelectedImage="@mipmap/tab_button_alarm_sel"
+            app:tabTitle="@string/bottom_warning" />
+
+        <com.sate7.wlj.developerreader.sate7gems.view.TabView
+            android:id="@+id/tabFence"
+            style="@style/TableItem"
+            app:tabColor="@color/colorPrimaryDark"
+            app:tabImage="@mipmap/tab_button_fence_nor"
+            app:tabSelectedImage="@mipmap/tab_button_fence_sel"
+            app:tabTitle="@string/bottom_fence" />
+
+        <com.sate7.wlj.developerreader.sate7gems.view.TabView
+            android:id="@+id/tabMy"
+            style="@style/TableItem"
+            app:tabColor="@color/colorPrimaryDark"
+            app:tabImage="@mipmap/tab_button_my_nor"
+            app:tabSelectedImage="@mipmap/tab_button_my_sel"
+            app:tabTitle="@string/bottom_my" />
+    </LinearLayout>
+</layout>

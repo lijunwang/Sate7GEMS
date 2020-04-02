@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="login_icon_width" type="dimen">45dp</item>
+    <item name="login_icon_height" type="dimen">45dp</item>
+    <item name="login_margin_left" type="dimen">20dp</item>
+    <item name="login_margin_right" type="dimen">20dp</item>
+    <item name="login_margin_left_add" type="dimen">65dp</item>
+    <item name="login_margin_right_add" type="dimen">65dp</item>
+    <item name="login_margin_top_big" type="dimen">30dp</item>
+    <item name="login_margin_top_middle" type="dimen">20dp</item>
+    <item name="login_margin_top_small" type="dimen">10dp</item>
+    <item name="login_sate7_width" type="dimen">150dp</item>
+    <item name="login_wechat_width" type="dimen">150dp</item>
+    <item name="login_wechat_height" type="dimen">150dp</item>
+    <item name="settings_margin_left" type="dimen">20dp</item>
+    <item name="settings_margin_right" type="dimen">20dp</item>
+    <item name="settings_item_height" type="dimen">50dp</item>
+    <item name="marker_info_height" type="dimen">50dp</item>
+    <item name="marker_info_padding_left" type="dimen">5dp</item>
+</resources>

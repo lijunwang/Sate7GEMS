@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">Sate7GEMS</string>
+    <string name="login">登陆</string>
+    <string name="list_equipment">设备列表</string>
+    <string name="select_equipment">选择设备</string>
+    <string name="device">设备</string>
+    <string name="equipment_tag">设备标签</string>
+    <string name="equipment_iemi">IMEI</string>
+    <string name="fence_empty">此围栏中未添加设备</string>
+    <string name="equipment_number">卫星号码</string>
+    <string name="my_equipment">监控设备</string>
+    <string name="detail">详情</string>
+    <string name="company_name">柒星GEMS平台</string>
+    <string name="remember_pwd">记住密码</string>
+    <string name="sate7_number">服务热线:010-529003034</string>
+    <string name="sate7_web">www.7sate.com</string>
+    <string name="name_hint">请输入用户名</string>
+    <string name="pwd_hint">请输入密码</string>
+    <string name="login_input_error">用户名和密码不能为空</string>
+    <string name="login_success">登陆成功</string>
+    <string name="login_failed">登陆失败</string>
+
+    <string name="bottom_location">位置</string>
+    <string name="bottom_warning">报警</string>
+    <string name="bottom_fence">围栏</string>
+    <string name="bottom_my">我的</string>
+    <string name="push">报警消息通知</string>
+    <string name="version">版本信息:V1.1.3</string>
+    <string name="number">客户热线:010-52900303 95795007</string>
+    <string name="web">公司网址:www.7sate.com</string>
+    <string name="change_pwd">修改密码</string>
+    <string name="help">帮助</string>
+    <string name="exit">退出登录</string>
+    <string name="dial">拨号</string>
+    <string name="sms">信息</string>
+    <string name="upload">上报</string>
+    <string name="track">轨迹</string>
+    <string name="detail_location">经度:%f\n纬度:%f</string>
+    <string name="detail_imei">IMEI:%s</string>
+    <string name="detail_number">卫星号码:%s</string>
+    <string name="detail_update">更新于:%s</string>
+    <string name="nonsupport">不支持此功能</string>
+    <string name="cannot_call">M2M设备无法接听电话</string>
+    <string name="bind_empty">绑定号码不能为空</string>
+    <string name="bind_ok">绑定</string>
+    <string name="bind_failed">绑定号码失败，%s</string>
+    <string name="bind_success">号码绑定成功</string>
+    <string name="cancel">取消</string>
+    <string name="bind_title">绑定电话号码</string>
+    <string name="bind_message">当前设备未绑定号码，请输入需要绑定的电话号码?</string>
+
+    <string name="create_fence">创建围栏</string>
+    <string name="create_fence_name">围栏名称</string>
+    <string name="fence_name_empty">围栏名称不能为空</string>
+    <string name="fence_start_end_empty">请设置开始结束时间</string>
+    <string name="fence_end_too_late">结束时间不能早于当前时间</string>
+    <string name="fence_point_pair">请至少输入3对正确的围栏顶点数据</string>
+    <string name="fence_add_device">请添加设备</string>
+    <string name="add_point">添加经纬度坐标</string>
+    <string name="add_point_lng_1">请添加顶点1经度</string>
+    <string name="add_point_lat_1">请添加顶点1纬度</string>
+    <string name="add_point_lng_2">请添加顶点2经度</string>
+    <string name="add_point_lat_2">请添加顶点2纬度</string>
+    <string name="add_point_lng_3">请添加顶点3经度</string>
+    <string name="add_point_lat_3">请添加顶点3纬度</string>
+    <string name="add_point_lng_4">请添加顶点4经度</string>
+    <string name="add_point_lat_4">请添加顶点4纬度</string>
+    <string name="create_fence_name_hint">请输入围栏名称</string>
+    <string name="start_time">开始时间</string>
+    <string name="maohao">"："</string>
+    <string name="end_time">结束时间</string>
+    <string name="add_device">添加设备</string>
+    <string name="save">完成</string>
+    <string name="create_success">创建成功</string>
+    <string name="create_failed">创建失败</string>
+    <string name="select_points_on_map">地图上选点</string>
+    <string name="select_points_clean">重新再选</string>
+    <string name="warning_empty">所选设备没有警报消息</string>
+
+    <string-array name="test">
+        <item>AAA</item>
+        <item>BBB</item>
+        <item>CCC</item>
+        <item>DDD</item>
+    </string-array>
+</resources>
