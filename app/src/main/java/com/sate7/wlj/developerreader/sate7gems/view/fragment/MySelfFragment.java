@@ -14,7 +14,9 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.sate7.wlj.developerreader.sate7gems.R;
+import com.sate7.wlj.developerreader.sate7gems.Sate7EGMSApplication;
 import com.sate7.wlj.developerreader.sate7gems.databinding.FragmentMyselfBinding;
+import com.sate7.wlj.developerreader.sate7gems.net.Sate7GEMSServer;
 import com.sate7.wlj.developerreader.sate7gems.util.Constants;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 
@@ -64,6 +66,7 @@ public class MySelfFragment extends BaseFragment implements CompoundButton.OnChe
                 XLog.dReport("exit ... ");
                 SPUtils.getInstance().put(Constants.NEED_LOGIN,true);
                 getActivity().finish();
+                Sate7EGMSApplication.setEquipmentsList(null);
                 break;
         }
     }

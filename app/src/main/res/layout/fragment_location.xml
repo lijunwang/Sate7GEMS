@@ -10,6 +10,7 @@
             android:id="@+id/top"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:background="@color/qmui_config_color_gray_9"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -33,7 +34,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="50dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.sate7.wlj.developerreader.sate7gems.view.StateRecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

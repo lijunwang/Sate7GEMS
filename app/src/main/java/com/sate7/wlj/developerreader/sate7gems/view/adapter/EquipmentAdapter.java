@@ -25,6 +25,7 @@ import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class EquipmentAdapter extends RecyclerView.Adapter {
@@ -46,7 +47,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
     public EquipmentAdapter(Context context, TYPE type) {
         this.context = context;
         this.type = type;
-        selectedDeviceImei = (HashSet<String>) SPUtils.getInstance().getStringSet(type == TYPE.WARNING ? Constants.SELECT_WARNING_IMEIS : Constants.SELECT_LOCATION_IMEIS);
+        selectedDeviceImei = (HashSet<String>) SPUtils.getInstance().getStringSet(type == TYPE.WARNING ? Constants.SELECT_WARNING_IMEIS : Constants.SELECT_LOCATION_IMEIS, new HashSet<>());
         XLog.dReport("selectedDeviceImei ... " + type + "," + selectedDeviceImei);
     }
 
@@ -57,10 +58,19 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
 
     public ArrayList<EquipmentListBean.DataBean.Device> getSelectedDevices() {
         ArrayList<EquipmentListBean.DataBean.Device> selectedDevices = new ArrayList<>();
-        for (EquipmentListBean.DataBean.Device device : devices) {
-            if (device.isChecked()) {
-                XLog.dReport("checked debug selected " + device.getTag());
-                selectedDevices.add(device);
+        if(type != null){
+            for (EquipmentListBean.DataBean.Device device : devices) {
+                if (selectedDeviceImei.contains(device.getImei())) {
+                    XLog.dReport("getSelectedDevices type " + type + device.getTag());
+                    selectedDevices.add(device);
+                }
+            }
+        }else{
+            for (EquipmentListBean.DataBean.Device device : devices) {
+                if (device.isChecked()) {
+                    XLog.dReport("getSelectedDevices bb " + device.getTag());
+                    selectedDevices.add(device);
+                }
             }
         }
         return selectedDevices;
@@ -69,10 +79,8 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
     public ArrayList<EquipmentListBean.DataBean.Device> getSelectedDevices(TYPE type) {
         Set<String> selectedSet = SPUtils.getInstance().getStringSet(type == TYPE.WARNING ? Constants.SELECT_WARNING_IMEIS : Constants.SELECT_LOCATION_IMEIS);
         ArrayList<EquipmentListBean.DataBean.Device> selectedDevices = new ArrayList<>();
-        XLog.dReport("checked debug getSelectedDevices " + type + "," + selectedDevices.size());
         for (EquipmentListBean.DataBean.Device device : devices) {
             if (device.isChecked() && selectedSet.contains(device.getImei())) {
-                XLog.dReport("checked debug TYPE selected " + type + "," + device.getTag());
                 selectedDevices.add(device);
             }
         }
@@ -80,7 +88,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
     }
 
     public void onToggled(TYPE type) {
-        /*Set<String> selectImei = new HashSet<>();
+        Set<String> selectImei = new HashSet<>();
         ArrayList<EquipmentListBean.DataBean.Device> devices = getSelectedDevices();
         selectedDeviceImei.clear();
         for (EquipmentListBean.DataBean.Device device : devices) {
@@ -95,7 +103,19 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
                 SPUtils.getInstance().put(Constants.SELECT_LOCATION_IMEIS, selectImei);
                 break;
         }
-        XLog.dReport("selectedDeviceImei onToggled ... " + type + "," + selectImei);*/
+        XLog.dReport("selectedDeviceImei onToggled ... " + type + "," + selectImei);
+    }
+
+    private void save2SP(){
+        XLog.dReport("save2SP ... " + type + "," + selectedDeviceImei);
+        switch (type) {
+            case WARNING:
+                SPUtils.getInstance().put(Constants.SELECT_WARNING_IMEIS, selectedDeviceImei);
+                break;
+            case LOCATION:
+                SPUtils.getInstance().put(Constants.SELECT_LOCATION_IMEIS, selectedDeviceImei);
+                break;
+        }
     }
 
     public void update(ArrayList<EquipmentListBean.DataBean.Device> devices) {
@@ -148,15 +168,23 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
                     int realPosition = position - 1;
                     EquipmentListBean.DataBean.Device device = devices.get(realPosition);
                     device.setChecked(isChecked);
-                    if(isChecked && !selectedDeviceImei.contains(device.getImei())){
-                        selectedDeviceImei.add(device.getImei());
-                    }
+                    if(type != null){
+                        if (isChecked && !selectedDeviceImei.contains(device.getImei())) {
+                            selectedDeviceImei.add(device.getImei());
+                        }
 
-                    if(!isChecked && selectedDeviceImei.contains(device.getImei())){
-                        //to remove
-                        selectedDeviceImei.remove(device.getImei());
+                        if (!isChecked && selectedDeviceImei.contains(device.getImei())) {
+                            //to remove
+                            for (Iterator<String> i = selectedDeviceImei.iterator(); i.hasNext(); ) {
+                                String element = i.next();
+                                if (device.getImei().equals(element)) {
+                                    XLog.dReport("remove ... " + element + "," + device.getTag());
+                                    i.remove();
+                                    save2SP();
+                                }
+                            }
+                        }
                     }
-
                 }
             }
         });
@@ -186,7 +214,6 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        XLog.dReport("getItemCount ... " + type + "," + selectedDeviceImei);
         return devices.size() + 1;
     }
 

@@ -76,6 +76,7 @@
     <string name="select_points_on_map">地图上选点</string>
     <string name="select_points_clean">重新再选</string>
     <string name="warning_empty">所选设备没有警报消息</string>
+    <string name="warning_no_device">请选择设备</string>
 
     <string-array name="test">
         <item>AAA</item>

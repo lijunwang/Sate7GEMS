@@ -27,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
         }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        loginViewModel.setUserName("qx_admin");
+        loginViewModel.setPassword("qx");
         binding.setLoginViewMode(loginViewModel);
         loginViewModel.getLoginResult().observe(this, new Observer<String>() {
             @Override

@@ -1,5 +1,6 @@
 package com.sate7.wlj.developerreader.sate7gems.view.fragment;
 
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.WarningInfoBean;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 import com.sate7.wlj.developerreader.sate7gems.view.MyItemDecoration;
+import com.sate7.wlj.developerreader.sate7gems.view.StateRecyclerView;
 import com.sate7.wlj.developerreader.sate7gems.view.adapter.EquipmentAdapter;
 import com.sate7.wlj.developerreader.sate7gems.view.adapter.WarningInfoAdapter;
 import com.sate7.wlj.developerreader.sate7gems.viewmodel.EquipmentListViewModel;
@@ -28,7 +30,7 @@ import com.sate7.wlj.developerreader.sate7gems.viewmodel.WarningViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarningFragment extends BaseFragment implements View.OnClickListener {
+public class WarningFragment extends BaseFragment implements View.OnClickListener, StateRecyclerView.StateListener {
     private FragmentWarningBinding binding;
     private WarningViewModel warningViewModel;
     private WarningInfoAdapter warningInfoAdapter;
@@ -66,12 +68,13 @@ public class WarningFragment extends BaseFragment implements View.OnClickListene
         binding.warningTop.setOnClickListener(this);
         binding.warningDeviceRV.setAdapter(equipmentAdapter);
         binding.warningInfoRV.setAdapter(warningInfoAdapter);
+        binding.warningDeviceRV.setStateListener(this);
         binding.warningInfoRV.addItemDecoration(new MyItemDecoration());
 
         equipmentListViewModel.getAllDevice().observe(this, new Observer<ArrayList<EquipmentListBean.DataBean.Device>>() {
             @Override
             public void onChanged(ArrayList<EquipmentListBean.DataBean.Device> devices) {
-                binding.warningDeviceRV.setVisibility(View.INVISIBLE);
+//                binding.warningDeviceRV.setVisibility(View.INVISIBLE);
                 equipmentAdapter.update(devices);
             }
         });
@@ -94,8 +97,9 @@ public class WarningFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.warning_top:
-                mHandler.removeMessages(MSG_TOGGLE);
-                mHandler.sendEmptyMessageDelayed(MSG_TOGGLE, 200);
+//                mHandler.removeMessages(MSG_TOGGLE);
+//                mHandler.sendEmptyMessageDelayed(MSG_TOGGLE, 200);
+                binding.warningDeviceRV.toggle();
                 break;
         }
     }
@@ -103,6 +107,10 @@ public class WarningFragment extends BaseFragment implements View.OnClickListene
     private void startLoadWarningInfo() {
         ArrayList<EquipmentListBean.DataBean.Device> devices = equipmentAdapter.getSelectedDevices(EquipmentAdapter.TYPE.WARNING);
         XLog.dReport("warning startLoadWarningInfo ..." + devices);
+        if(devices.isEmpty()){
+            binding.warningEmpty.setVisibility(View.VISIBLE);
+            binding.warningEmpty.setText(R.string.warning_no_device);
+        }
         warningInfoAdapter.update(new ArrayList<>(), false);
         for (EquipmentListBean.DataBean.Device device : devices) {
             warningViewModel.fetchWarningInfo(device.getImei());
@@ -118,11 +126,12 @@ public class WarningFragment extends BaseFragment implements View.OnClickListene
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what) {
                 case MSG_TOGGLE:
-                    toggle();
+//                    toggle();
+//                    binding.warningDeviceRV.toggle();
                     break;
                 case MSG_LOAD_WARNING:
-                    startLoadWarningInfo();
                     equipmentAdapter.onToggled(EquipmentAdapter.TYPE.WARNING);
+                    startLoadWarningInfo();
                     break;
             }
         }
@@ -162,4 +171,19 @@ public class WarningFragment extends BaseFragment implements View.OnClickListene
     }
 
 
+    @Override
+    public void onOpened() {
+        XLog.dReport("warning onOpened ...");
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(binding.warningToggle, "rotationX", 0, 180);
+        rotation.start();
+    }
+
+    @Override
+    public void onClosed() {
+        XLog.dReport("warning onClosed ...");
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(binding.warningToggle, "rotationX", 180, 0);
+        rotation.start();
+        mHandler.removeMessages(MSG_LOAD_WARNING);
+        mHandler.sendEmptyMessageDelayed(MSG_LOAD_WARNING, 100);
+    }
 }

@@ -49,6 +49,7 @@ public class Sate7GEMSServer implements NetBase {
 
 
     public void login(String userName, String password, LoginCallBack callback) {
+        XLog.dReport("login ... " + userName + "," + password);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(LOGIN_TYPE_USERNAME_PASSWORD_KEY, LOGIN_TYPE_USERNAME_PASSWORD_VALUE);
 //        jsonObject.addProperty(LOGIN_USER_NAME_KEY, LOGIN_USER_NAME_VALUE);
@@ -73,7 +74,7 @@ public class Sate7GEMSServer implements NetBase {
         }
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("page_no", 1);
-        jsonObject.addProperty("page_size", 20);
+        jsonObject.addProperty("page_size", 80);
         String content = jsonObject.toString();
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), content);
         final Request request = new Request.Builder().
@@ -116,11 +117,11 @@ public class Sate7GEMSServer implements NetBase {
                 addHeader("Authorization", Sate7EGMSApplication.getToken()).
                 addHeader("content-type", "application/json").
                 url(GET_DEVICE_INFO + imei).get().build();
-        XLog.dReport("url == " + request.url());
+        XLog.dReport("getLatestLocationInfo url == " + request.url());
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                XLog.dReport("detail onFailure ... " + e.getMessage());
+                XLog.dReport("getLatestLocationInfo detail onFailure ... " + e.getMessage());
             }
 
             @Override
@@ -331,7 +332,7 @@ public class Sate7GEMSServer implements NetBase {
     public void queryFenceList(String orgCode, OnFenceListQueryCallback callback) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("page_no", 1);
-        jsonObject.addProperty("page_size", 20);
+        jsonObject.addProperty("page_size", 100);
         String content = jsonObject.toString();
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), content);
         Request request = new Request.Builder().

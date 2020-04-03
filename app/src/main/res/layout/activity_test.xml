@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".TestActivity">
 
-    <TextView
-        android:id="@+id/device"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/list_equipment"/>
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/test_flex"
-        app:layout_constraintTop_toBottomOf="@id/device"
-        app:alignContent="flex_start"
-        app:alignItems="flex_start"
-        app:flexWrap="wrap"
-        app:justifyContent="center"
-        app:showDivider="beginning|middle"
+    <Button
+        android:id="@+id/testBt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:dividerDrawable="@drawable/divide">
-    </com.google.android.flexbox.FlexboxLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/list_equipment" />
+
+    <com.sate7.wlj.developerreader.sate7gems.view.StateRecyclerView
+        android:id="@+id/testRV"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+</LinearLayout>

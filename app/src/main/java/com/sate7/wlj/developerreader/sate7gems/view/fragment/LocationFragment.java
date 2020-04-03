@@ -32,6 +32,7 @@ import com.sate7.wlj.developerreader.sate7gems.databinding.FragmentLocationBindi
 import com.sate7.wlj.developerreader.sate7gems.location.MarkerAction;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.DeviceDetailInfoBean;
 import com.sate7.wlj.developerreader.sate7gems.view.MyItemDecoration;
+import com.sate7.wlj.developerreader.sate7gems.view.StateRecyclerView;
 import com.sate7.wlj.developerreader.sate7gems.view.adapter.EquipmentAdapter;
 import com.sate7.wlj.developerreader.sate7gems.viewmodel.DetailViewMode;
 import com.sate7.wlj.developerreader.sate7gems.viewmodel.EquipmentListViewModel;
@@ -42,7 +43,7 @@ import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationFragment extends BaseFragment implements View.OnClickListener, BaiduMap.OnMarkerClickListener {
+public class LocationFragment extends BaseFragment implements View.OnClickListener, BaiduMap.OnMarkerClickListener, StateRecyclerView.StateListener {
     private FragmentLocationBinding binding;
     private EquipmentListViewModel equipmentListViewModel;
     private EquipmentAdapter adapter;
@@ -78,6 +79,7 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
         binding.mapView.getMap().setOnMarkerClickListener(this);
         binding.recyclerView.addItemDecoration(new MyItemDecoration());
         binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setStateListener(this);
         equipmentListViewModel.getAllDevice().observe(this, new Observer<ArrayList<EquipmentListBean.DataBean.Device>>() {
             @Override
             public void onChanged(ArrayList<EquipmentListBean.DataBean.Device> devices) {
@@ -162,12 +164,14 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
         adapter.onToggled(EquipmentAdapter.TYPE.LOCATION);
         ArrayList<EquipmentListBean.DataBean.Device> devices = adapter.getSelectedDevices(EquipmentAdapter.TYPE.LOCATION);
         BaiduMapHelper.getInstance().cleanAll(binding.mapView);
+        XLog.dReport("Location onToggled ..." + devices);
         for (EquipmentListBean.DataBean.Device device : devices) {
             detailViewMode.getLastLocationInfo(device.getImei());
         }
     }
 
     private int saveHeight = 0;
+
 
     private void toggle() {
         ValueAnimator valueAnimator = null;
@@ -197,7 +201,9 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 //获取当前的height值
+
                 int h = (Integer) finalValueAnimator.getAnimatedValue();
+                XLog.dReport("onAnimationUpdate nani ..." + h + "," + adapter.getItemCount());
                 //动态更新view的高度
                 binding.recyclerView.getLayoutParams().height = h;
                 binding.recyclerView.requestLayout();
@@ -234,7 +240,8 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
                     showDetail(device);
                     break;
                 case MSG_TOGGLE:
-                    toggle();
+//                    toggle();
+                    binding.recyclerView.toggle();
                     break;
                 case MSG_CENTER_TO:
                     EquipmentListBean.DataBean.Device device1 = (EquipmentListBean.DataBean.Device) msg.obj;
@@ -310,4 +317,18 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
+    @Override
+    public void onOpened() {
+        XLog.dReport("onOpened ...");
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(binding.toggle, "rotationX", 0, 180);
+        rotation.start();
+    }
+
+    @Override
+    public void onClosed() {
+        XLog.dReport("onClosed ...");
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(binding.toggle, "rotationX", 180, 0);
+        rotation.start();
+        onToggled();
+    }
 }

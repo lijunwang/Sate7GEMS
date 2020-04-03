@@ -10,6 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center"
+            android:background="@color/qmui_config_color_gray_9"
             android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -20,8 +21,10 @@
                 android:text="@string/select_equipment" />
 
             <ImageView
+                android:id="@+id/warning_toggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:src="@drawable/open" />
         </LinearLayout>
 
@@ -43,8 +46,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/warning_top" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.sate7.wlj.developerreader.sate7gems.view.StateRecyclerView
             android:id="@+id/warningDeviceRV"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
