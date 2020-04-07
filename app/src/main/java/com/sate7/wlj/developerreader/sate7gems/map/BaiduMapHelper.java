@@ -48,7 +48,7 @@ public class BaiduMapHelper {
         }
         /*View view = LayoutInflater.from(mapView.getContext()).inflate(R.layout.marker_info, null, false);
         InfoWindow infoWindow = new InfoWindow(view,point,-100);*/
-        XLog.dReport("nani addMarkerPoint ww ... " + device.getTag());
+        XLog.dReport("nani addMarkerPoint ww ... " + point + "," + device);
         BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(R.drawable.location);
         Bundle data = new Bundle();
@@ -72,15 +72,16 @@ public class BaiduMapHelper {
         return mapView.getMap().addOverlay(option);
     }
 
-    public Overlay addLines(MapView mapView, ArrayList<LatLng> points) {
+    public Overlay drawLines(MapView mapView, ArrayList<LatLng> points) {
         //构建折线点坐标
-//        LatLng p1 = new LatLng(39.97923, 116.357428);
-//        LatLng p2 = new LatLng(39.94923, 116.397428);
-//        LatLng p3 = new LatLng(39.97923, 116.437428);
-//        List<LatLng> points = new ArrayList<LatLng>();
-//        points.add(p1);
-//        points.add(p2);
-//        points.add(p3);
+        /*LatLng p1 = new LatLng(39.97923, 116.357428);
+        LatLng p2 = new LatLng(39.94923, 116.397428);
+        LatLng p3 = new LatLng(39.97923, 116.437428);
+        List<LatLng> points = new ArrayList<LatLng>();
+        points.add(p1);
+        points.add(p2);
+        points.add(p3);*/
+        XLog.dReport("drawLines ..." + points.size() + "," + points);
 //设置折线的属性
         OverlayOptions mOverlayOptions = new PolylineOptions()
                 .width(10)
@@ -88,8 +89,10 @@ public class BaiduMapHelper {
                 .points(points);
 //在地图上绘制折线
 //mPloyline 折线对象
-        Overlay polyline = mapView.getMap().addOverlay(mOverlayOptions);
-        return polyline;
+        Overlay mPolyline = mapView.getMap().addOverlay(mOverlayOptions);
+        boolean visible = mPolyline.isVisible();
+        XLog.dReport("drawLines ... " + visible + "," + mPolyline);
+        return mPolyline;
     }
 
 }

@@ -128,11 +128,12 @@ public class Sate7GEMSServer implements NetBase {
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
                 Gson gson = new Gson();
+//                XLog.dReport("Location detail gson ... " + msg);
                 DeviceDetailInfoBean detailInfoBean = gson.fromJson(msg, DeviceDetailInfoBean.class);
                 if (detailInfoBean.getCode() == 0 && detailInfoBean.getData() != null) {
                     EquipmentListBean.DataBean.Device device = detailInfoBean.getData().getBasic();
                     List<List<Double>> locationList = detailInfoBean.getData().getLocation();
-//                    XLog.dReport("detail onResponse 22 ... " + device + "," + locationList.size());
+                    XLog.dReport("Location detail onResponse ... " + device + "," + locationList.size());
                     listener.onLocationQuery(detailInfoBean);
                     /*if (locationList.size() >= 1) {
                         List<Double> l = locationList.get(0);//first or last;
@@ -178,7 +179,11 @@ public class Sate7GEMSServer implements NetBase {
         void onLocationQuery(DeviceDetailInfoBean deviceDetailInfoBean);
     }
 
-    public void getDataInfoByDate() {
+    public interface LocationsCallback {
+        void onLocationsGet(ArrayList<LatLng> points);
+    }
+
+    public void getLocationInfoByDate(LocationsCallback callback) {
         JsonObject jsonObject = new JsonObject();
         JsonArray types = new JsonArray();
         types.add("LOCATION_REC");
@@ -203,25 +208,26 @@ public class Sate7GEMSServer implements NetBase {
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                XLog.dReport("detail onFailure ... " + e.getMessage());
+                XLog.dReport("getDataInfoByDate onFailure ... " + e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String msg = response.body().string();
+                XLog.dReport("nani ddd:" + msg);
                 Gson gson = new Gson();
                 LogInfoByDateBean logInfoByDateBean = gson.fromJson(msg, LogInfoByDateBean.class);
                 if (logInfoByDateBean.getCode() == 0) {
                     EquipmentListBean.DataBean.Device device = logInfoByDateBean.getData().getBasic();
-                    XLog.dReport("device info ... " + device);
+                    XLog.dReport("getDataInfoByDate device info ... " + device);
                     List<List<Double>> list = logInfoByDateBean.getData().getLocation();
-                    XLog.dReport("list info ... " + list.size());
+                    XLog.dReport("getDataInfoByDate location info size ... " + list.size());
+                    ArrayList<LatLng> locations = new ArrayList<>();
                     for (int i = 0; i < list.size(); i++) {
-                        XLog.dReport("list detail info ... " + i + "," + list.get(i).get(0) + "," + list.get(i).get(1));
+                        XLog.dReport("getDataInfoByDate lat lng ... " + i + "," + list.get(i).size() + "," + list.get(i).get(0) + "," + list.get(i).get(1));
+                        locations.add(new LatLng(list.get(i).get(1), list.get(i).get(0)));
                     }
-                    for (List<Double> data : list) {
-                        XLog.dReport("data info aa ... " + data.size());
-                    }
+                    callback.onLocationsGet(locations);
                 }
             }
         });

@@ -67,6 +67,7 @@
     <string name="add_point_lat_4">请添加顶点4纬度</string>
     <string name="create_fence_name_hint">请输入围栏名称</string>
     <string name="start_time">开始时间</string>
+    <string name="location_empty">%s,缺乏位置信息</string>
     <string name="maohao">"："</string>
     <string name="end_time">结束时间</string>
     <string name="add_device">添加设备</string>

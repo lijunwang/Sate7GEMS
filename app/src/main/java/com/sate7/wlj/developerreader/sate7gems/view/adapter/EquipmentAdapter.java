@@ -162,7 +162,14 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
                     allChecked = isChecked;
                     for (EquipmentListBean.DataBean.Device device : devices) {
                         device.setChecked(allChecked);
+                        if(isChecked){
+                            selectedDeviceImei.add(device.getImei());
+                        }else{
+                            selectedDeviceImei.clear();
+                        }
+
                     }
+                    save2SP();
                     mHandler.sendEmptyMessageDelayed(MSG_UPDATE, 500);
                 } else {
                     int realPosition = position - 1;
@@ -199,7 +206,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
             EquipmentListBean.DataBean.Device device = devices.get(realPosition);
 //            equipmentHolder.checkBox.setChecked(device.isChecked());
             if (type != null) {
-//                XLog.dReport("selectedDeviceImei bind check ... " + type + "," + device.getTag() + "," + selectedDeviceImei + "," + device.isChecked() + "," + selectedDeviceImei.contains(device.getImei()));
+                XLog.dReport("selectedDeviceImei bind check ... " + type + "," + device.getTag() + "," + selectedDeviceImei + "," + device.isChecked() + "," + selectedDeviceImei.contains(device.getImei()));
                 equipmentHolder.checkBox.setChecked((selectedDeviceImei.contains(device.getImei())));
 //                equipmentHolder.checkBox.setChecked((selectedDeviceImei.contains(device.getImei())) & device.isChecked());
             } else {

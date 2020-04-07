@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':lib-test-java'
 rootProject.name='Sate7GEMS'

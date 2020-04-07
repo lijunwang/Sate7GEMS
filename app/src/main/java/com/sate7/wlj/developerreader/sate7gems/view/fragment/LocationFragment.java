@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +27,12 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.blankj.utilcode.util.PhoneUtils;
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.example.zhouwei.library.CustomPopWindow;
 import com.sate7.wlj.developerreader.sate7gems.R;
 import com.sate7.wlj.developerreader.sate7gems.databinding.FragmentLocationBinding;
 import com.sate7.wlj.developerreader.sate7gems.location.MarkerAction;
+import com.sate7.wlj.developerreader.sate7gems.net.Sate7GEMSServer;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.DeviceDetailInfoBean;
 import com.sate7.wlj.developerreader.sate7gems.view.MyItemDecoration;
 import com.sate7.wlj.developerreader.sate7gems.view.StateRecyclerView;
@@ -93,7 +96,7 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
             public void onChanged(DeviceDetailInfoBean deviceDetailInfoBean) {
                 EquipmentListBean.DataBean.Device device = deviceDetailInfoBean.getData().getBasic();
                 List<List<Double>> locationList = deviceDetailInfoBean.getData().getLocation();
-                XLog.dReport("location data ... " + locationList.size() + "," + device);
+                XLog.dReport("Location show ... " + locationList.size() + "," + device);
                 if (locationList.size() >= 1) {
                     List<Double> location = locationList.get(0);
                     LatLng point = new LatLng(location.get(1), location.get(0));
@@ -101,6 +104,8 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
                     BaiduMapHelper.getInstance().addMarkerPoint(binding.mapView, point, device);
                     handler.removeMessages(MSG_CENTER_TO);
                     handler.sendMessageDelayed(handler.obtainMessage(MSG_CENTER_TO, device), 500);
+                } else {
+                    ToastUtils.showLong(getResources().getString(R.string.location_empty, TextUtils.isEmpty(device.getTag()) ? device.getImei() : device.getTag()));
                 }
             }
         });
@@ -155,7 +160,13 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
                 markerAction.start(currentDevice, MarkerAction.ACTION.SMS);
                 break;
             case R.id.marker_track:
-                Toast.makeText(getContext(), "功能正在开发", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "功能正在开发", Toast.LENGTH_SHORT).show();
+                Sate7GEMSServer.getInstance().getLocationInfoByDate(new Sate7GEMSServer.LocationsCallback() {
+                    @Override
+                    public void onLocationsGet(ArrayList<LatLng> points) {
+                        BaiduMapHelper.getInstance().drawLines(binding.mapView, points);
+                    }
+                });
                 break;
         }
     }

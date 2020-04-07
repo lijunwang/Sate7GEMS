@@ -20,6 +20,8 @@ import com.sate7.wlj.developerreader.sate7gems.net.Sate7GEMSServer;
 import com.sate7.wlj.developerreader.sate7gems.util.Constants;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 
+import java.util.HashSet;
+
 public class MySelfFragment extends BaseFragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
     /*@Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -67,6 +69,8 @@ public class MySelfFragment extends BaseFragment implements CompoundButton.OnChe
                 SPUtils.getInstance().put(Constants.NEED_LOGIN,true);
                 getActivity().finish();
                 Sate7EGMSApplication.setEquipmentsList(null);
+                SPUtils.getInstance().put(Constants.SELECT_LOCATION_IMEIS,new HashSet<>());
+                SPUtils.getInstance().put(Constants.SELECT_WARNING_IMEIS,new HashSet<>());
                 break;
         }
     }

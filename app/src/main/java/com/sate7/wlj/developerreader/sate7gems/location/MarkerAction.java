@@ -76,7 +76,13 @@ public class MarkerAction {
         currentDevice = device;
         switch (action) {
             case SMS:
-                PhoneUtils.sendSms(device.getBindNumber(), "");
+                if (TextUtils.isEmpty(device.getBindNumber())) {
+                    if (!askBindNumberDialog.isShowing()) {
+                        askBindNumberDialog.show();
+                    }
+                } else {
+                    PhoneUtils.sendSms(device.getBindNumber(), "");
+                }
                 break;
             case DIAL:
                 if (device.getType().equals(Constants.DEVICE_DTYPE_M2M)) {
