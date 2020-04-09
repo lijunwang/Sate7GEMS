@@ -179,19 +179,19 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
                         switch (i) {
                             case 0:
                                 binding.createFenceP1Lat.setText("" + mapClickedPoint.get(i).latitude);
-                                binding.createFenceP1Lng.setText("" + mapClickedPoint.get(i).latitude);
+                                binding.createFenceP1Lng.setText("" + mapClickedPoint.get(i).longitude);
                                 break;
                             case 1:
                                 binding.createFenceP2Lat.setText("" + mapClickedPoint.get(i).latitude);
-                                binding.createFenceP2Lng.setText("" + mapClickedPoint.get(i).latitude);
+                                binding.createFenceP2Lng.setText("" + mapClickedPoint.get(i).longitude);
                                 break;
                             case 2:
                                 binding.createFenceP3Lat.setText("" + mapClickedPoint.get(i).latitude);
-                                binding.createFenceP3Lng.setText("" + mapClickedPoint.get(i).latitude);
+                                binding.createFenceP3Lng.setText("" + mapClickedPoint.get(i).longitude);
                                 break;
                             case 3:
                                 binding.createFenceP4Lat.setText("" + mapClickedPoint.get(i).latitude);
-                                binding.createFenceP4Lng.setText("" + mapClickedPoint.get(i).latitude);
+                                binding.createFenceP4Lng.setText("" + mapClickedPoint.get(i).longitude);
                                 break;
                         }
                     }

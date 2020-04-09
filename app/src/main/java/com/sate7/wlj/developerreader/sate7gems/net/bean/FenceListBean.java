@@ -51,37 +51,39 @@ public class FenceListBean {
          * mt_list : [{"name":"0","imeis":[],"start_date":"2020-02-19","end_date":"2020-02-27","geofence_data":[116.46056662170871,39.91815564878112,116.4760844718016,39.91691111555171,116.4753453839385,39.91086790029015,116.4596793734743,39.91001278576602],"mdt":"GEOFENCE","mi":"ONE_SHOT","operators":null},{"name":"ss","imeis":[],"start_date":"2020-02-21","end_date":"2020-02-28","geofence_data":[116.43420270122199,39.9343584262252,116.44563188353847,39.93423377921478,116.44929430942302,39.925585866084994,116.43514950481111,39.9258913664044],"mdt":"GEOFENCE","mi":"ONE_SHOT","operators":null}]
          */
 
-        private int page_no;
+        @SerializedName("page_no")
+        private int pageNo;
         @SerializedName("total_count")
         private int totalCount;
-        private int page_count;
-        private int page_size;
+        @SerializedName("page_count")
+        private int pageCount;
+        @SerializedName("page_size")
+        private int pageSize;
         @SerializedName("mt_list")
         private List<FenceBean> fenceList;
 
-        public int getPage_no() {
-            return page_no;
+        public int getPageNo() {
+            return pageNo;
         }
 
-        public void setPage_no(int page_no) {
-            this.page_no = page_no;
+        public void setPageNo(int pageNo) {
+            this.pageNo = pageNo;
         }
 
-
-        public int getPage_count() {
-            return page_count;
+        public int getPageCount() {
+            return pageCount;
         }
 
-        public void setPage_count(int page_count) {
-            this.page_count = page_count;
+        public void setPageCount(int pageCount) {
+            this.pageCount = pageCount;
         }
 
-        public int getPage_size() {
-            return page_size;
+        public int getPageSize() {
+            return pageSize;
         }
 
-        public void setPage_size(int page_size) {
-            this.page_size = page_size;
+        public void setPageSize(int pageSize) {
+            this.pageSize = pageSize;
         }
 
         public int getTotalCount() {
@@ -131,7 +133,7 @@ public class FenceListBean {
                 return isOpened;
             }
 
-            public void setIsOpened(boolean opened){
+            public void setIsOpened(boolean opened) {
                 isOpened = opened;
             }
 

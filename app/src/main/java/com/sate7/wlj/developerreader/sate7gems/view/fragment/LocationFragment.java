@@ -161,7 +161,7 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
                 break;
             case R.id.marker_track:
 //                Toast.makeText(getContext(), "功能正在开发", Toast.LENGTH_SHORT).show();
-                Sate7GEMSServer.getInstance().getLocationInfoByDate(new Sate7GEMSServer.LocationsCallback() {
+                Sate7GEMSServer.getInstance().getLocationInfoByDate(currentDevice.getImei(), new Sate7GEMSServer.LocationsCallback() {
                     @Override
                     public void onLocationsGet(ArrayList<LatLng> points) {
                         BaiduMapHelper.getInstance().drawLines(binding.mapView, points);

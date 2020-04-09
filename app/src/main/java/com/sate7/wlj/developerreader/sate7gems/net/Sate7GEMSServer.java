@@ -17,7 +17,9 @@ import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 import com.sate7.wlj.developerreader.sate7gems.viewmodel.WarningViewModel;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import okhttp3.Call;
@@ -52,8 +54,6 @@ public class Sate7GEMSServer implements NetBase {
         XLog.dReport("login ... " + userName + "," + password);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(LOGIN_TYPE_USERNAME_PASSWORD_KEY, LOGIN_TYPE_USERNAME_PASSWORD_VALUE);
-//        jsonObject.addProperty(LOGIN_USER_NAME_KEY, LOGIN_USER_NAME_VALUE);
-//        jsonObject.addProperty(LOGIN_USER_PASSWORD_KEY, LOGIN_USER_PASSWORD_VALUE);
         jsonObject.addProperty(LOGIN_USER_NAME_KEY, userName);
         jsonObject.addProperty(LOGIN_USER_PASSWORD_KEY, password);
         String content = jsonObject.toString();
@@ -183,14 +183,20 @@ public class Sate7GEMSServer implements NetBase {
         void onLocationsGet(ArrayList<LatLng> points);
     }
 
-    public void getLocationInfoByDate(LocationsCallback callback) {
+    public void getLocationInfoByDate(String imei, LocationsCallback callback) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         JsonObject jsonObject = new JsonObject();
         JsonArray types = new JsonArray();
         types.add("LOCATION_REC");
         jsonObject.add("types", types);
         JsonObject date = new JsonObject();
-        date.addProperty("start", "2020-3-10");
-        date.addProperty("end", "2020-3-19");
+        Calendar calendar = Calendar.getInstance();
+        String end = simpleDateFormat.format(calendar.getTime());
+        date.addProperty("end", end);
+        calendar.add(Calendar.MONTH, -1);
+        String start = simpleDateFormat.format(calendar.getTime());
+        XLog.dReport("getLocationInfoByDate ... " + imei + "," + start + "," + end);
+        date.addProperty("start", start);
         jsonObject.add("date", date);
         JsonObject page = new JsonObject();
         page.addProperty("page_no", 1);
@@ -201,7 +207,7 @@ public class Sate7GEMSServer implements NetBase {
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), content);
         Request request = new Request.Builder().
                 addHeader("Authorization", Sate7EGMSApplication.getToken()).
-                url(GET_DATA_INFO_BY_DATE + "867935030002256").
+                url(GET_DATA_INFO_BY_DATE + imei/*"867935030002256"*/).
                 post(body).
                 build();
         XLog.dReport("url == " + request.url());
@@ -315,9 +321,9 @@ public class Sate7GEMSServer implements NetBase {
         @Override
         public void onResponse(Call call, Response response) throws IOException {
             String msg = response.body().string();
+            XLog.dReport("activity_login onResponse ... " + msg + "," + response.code());
             Gson gson = new Gson();
             LoginBean loginBean = gson.fromJson(msg, LoginBean.class);
-            XLog.dReport("activity_login onResponse ... " + msg);
             if (loginBean.getCode() == 0 && loginBean.getMsg().equals("SUCCESS")) {
                 String token = loginBean.getData().getToken();
                 loginSuccess(token);

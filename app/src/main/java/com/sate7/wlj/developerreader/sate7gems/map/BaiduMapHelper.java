@@ -72,7 +72,7 @@ public class BaiduMapHelper {
         return mapView.getMap().addOverlay(option);
     }
 
-    public Overlay drawLines(MapView mapView, ArrayList<LatLng> points) {
+    public void drawLines(MapView mapView, ArrayList<LatLng> points) {
         //构建折线点坐标
         /*LatLng p1 = new LatLng(39.97923, 116.357428);
         LatLng p2 = new LatLng(39.94923, 116.397428);
@@ -82,6 +82,9 @@ public class BaiduMapHelper {
         points.add(p2);
         points.add(p3);*/
         XLog.dReport("drawLines ..." + points.size() + "," + points);
+        if(points.size() < 2){
+            return ;
+        }
 //设置折线的属性
         OverlayOptions mOverlayOptions = new PolylineOptions()
                 .width(10)
@@ -92,7 +95,6 @@ public class BaiduMapHelper {
         Overlay mPolyline = mapView.getMap().addOverlay(mOverlayOptions);
         boolean visible = mPolyline.isVisible();
         XLog.dReport("drawLines ... " + visible + "," + mPolyline);
-        return mPolyline;
     }
 
 }

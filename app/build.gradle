@@ -70,4 +70,8 @@ dependencies {
     implementation 'com.lxj:xpopup:1.8.10-x'
     implementation 'com.android.support:design:29.0.0'
     implementation 'com.google.android:flexbox:2.0.1'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.4.0'
 }
