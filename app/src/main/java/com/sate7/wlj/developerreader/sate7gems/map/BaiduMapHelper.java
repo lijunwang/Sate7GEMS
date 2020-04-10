@@ -17,6 +17,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Polyline;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.blankj.utilcode.util.ToastUtils;
 import com.sate7.wlj.developerreader.sate7gems.R;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
@@ -74,16 +75,13 @@ public class BaiduMapHelper {
 
     public void drawLines(MapView mapView, ArrayList<LatLng> points) {
         //构建折线点坐标
-        /*LatLng p1 = new LatLng(39.97923, 116.357428);
-        LatLng p2 = new LatLng(39.94923, 116.397428);
-        LatLng p3 = new LatLng(39.97923, 116.437428);
-        List<LatLng> points = new ArrayList<LatLng>();
-        points.add(p1);
-        points.add(p2);
-        points.add(p3);*/
         XLog.dReport("drawLines ..." + points.size() + "," + points);
         if(points.size() < 2){
+            ToastUtils.showLong(R.string.little_point);
             return ;
+        }
+        for(LatLng point : points){
+            addPoint(mapView,point);
         }
 //设置折线的属性
         OverlayOptions mOverlayOptions = new PolylineOptions()

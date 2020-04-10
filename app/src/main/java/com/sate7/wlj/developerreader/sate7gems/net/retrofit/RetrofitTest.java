@@ -8,11 +8,10 @@ import com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.FenceListBean;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.LogInfoByDateBean;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.WarningInfoBean;
-import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 
 import java.util.ArrayList;
 
-public class Test {
+public class RetrofitTest {
     private int pageNumber = 1;
 
     public void testWarning() {

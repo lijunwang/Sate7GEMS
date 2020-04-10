@@ -1,92 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+<layout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/marker_upload"
-            style="@style/MarkerImageButton"
-            android:src="@drawable/marker_upload"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
-        <TextView
-            style="@style/MarkerInfoTextView"
-            android:text="@string/upload"
-            app:layout_constraintLeft_toLeftOf="@id/marker_upload"
-            app:layout_constraintRight_toRightOf="@id/marker_upload"
-            app:layout_constraintTop_toBottomOf="@id/marker_upload" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/marker_upload"
+                style="@style/MarkerImageButton"
+                android:src="@drawable/marker_upload"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+            <TextView
+                style="@style/MarkerInfoTextView"
+                android:text="@string/upload"
+                app:layout_constraintLeft_toLeftOf="@id/marker_upload"
+                app:layout_constraintRight_toRightOf="@id/marker_upload"
+                app:layout_constraintTop_toBottomOf="@id/marker_upload" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageButton
-            android:id="@+id/marker_dial"
-            style="@style/MarkerImageButton"
-            android:src="@drawable/marker_dail"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
-        <TextView
-            style="@style/MarkerInfoTextView"
-            android:text="@string/dial"
-            app:layout_constraintLeft_toLeftOf="@id/marker_dial"
-            app:layout_constraintRight_toRightOf="@id/marker_dial"
-            app:layout_constraintTop_toBottomOf="@id/marker_dial" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/marker_dial"
+                style="@style/MarkerImageButton"
+                android:src="@drawable/marker_dail"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+            <TextView
+                style="@style/MarkerInfoTextView"
+                android:text="@string/dial"
+                app:layout_constraintLeft_toLeftOf="@id/marker_dial"
+                app:layout_constraintRight_toRightOf="@id/marker_dial"
+                app:layout_constraintTop_toBottomOf="@id/marker_dial" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageButton
-            android:id="@+id/marker_sms"
-            style="@style/MarkerImageButton"
-            android:src="@drawable/marker_sms"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
-        <TextView
-            style="@style/MarkerInfoTextView"
-            android:text="@string/sms"
-            app:layout_constraintLeft_toLeftOf="@id/marker_sms"
-            app:layout_constraintRight_toRightOf="@id/marker_sms"
-            app:layout_constraintTop_toBottomOf="@id/marker_sms" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/marker_sms"
+                style="@style/MarkerImageButton"
+                android:src="@drawable/marker_sms"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+            <TextView
+                style="@style/MarkerInfoTextView"
+                android:text="@string/sms"
+                app:layout_constraintLeft_toLeftOf="@id/marker_sms"
+                app:layout_constraintRight_toRightOf="@id/marker_sms"
+                app:layout_constraintTop_toBottomOf="@id/marker_sms" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageButton
-            android:id="@+id/marker_track"
-            style="@style/MarkerImageButton"
-            android:src="@drawable/marker_track"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
-        <TextView
-            style="@style/MarkerInfoTextView"
-            android:text="@string/track"
-            app:layout_constraintLeft_toLeftOf="@id/marker_track"
-            app:layout_constraintRight_toRightOf="@id/marker_track"
-            app:layout_constraintTop_toBottomOf="@id/marker_track" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/marker_track"
+                style="@style/MarkerImageButton"
+                android:src="@drawable/marker_track"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+            <TextView
+                style="@style/MarkerInfoTextView"
+                android:text="@string/track"
+                app:layout_constraintLeft_toLeftOf="@id/marker_track"
+                app:layout_constraintRight_toRightOf="@id/marker_track"
+                app:layout_constraintTop_toBottomOf="@id/marker_track" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</layout>

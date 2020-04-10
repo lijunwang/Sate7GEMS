@@ -5,47 +5,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.JsonObject;
 import com.sate7.wlj.developerreader.sate7gems.databinding.ActivityMainBinding;
-import com.sate7.wlj.developerreader.sate7gems.net.HttpUtils;
-import com.sate7.wlj.developerreader.sate7gems.net.NetBase;
-import com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean;
-import com.sate7.wlj.developerreader.sate7gems.net.bean.WarningInfoBean;
-import com.sate7.wlj.developerreader.sate7gems.net.retrofit.RetrofitGEMSServer;
+import com.sate7.wlj.developerreader.sate7gems.net.OkhttpTest;
+import com.sate7.wlj.developerreader.sate7gems.net.retrofit.RetrofitTest;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.Server;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.ServerImp;
-import com.sate7.wlj.developerreader.sate7gems.net.retrofit.Test;
-import com.sate7.wlj.developerreader.sate7gems.net.retrofit.UnsafeOkHttpClient;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
-import com.sate7.wlj.developerreader.sate7gems.view.fragment.BaseFragment;
 import com.sate7.wlj.developerreader.sate7gems.view.fragment.FenceFragment;
 import com.sate7.wlj.developerreader.sate7gems.view.fragment.LocationFragment;
 import com.sate7.wlj.developerreader.sate7gems.view.fragment.MySelfFragment;
 import com.sate7.wlj.developerreader.sate7gems.view.TabView;
 import com.sate7.wlj.developerreader.sate7gems.view.fragment.WarningFragment;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
-import retrofit2.http.Body;
-
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
     private final String TAG = "MainActivity";
@@ -118,14 +96,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.tabMy:
                 updateCurrentTab(3);
                 viewPager.setCurrentItem(3, true);
-//                test.testDetail();
-//                test.testByDate();
-                test.testCreateFence();
+//                retrofitTest.testDetail();
+//                retrofitTest.testByDate();
+//                retrofitTest.testCreateFence();
+//                okhttpTest.testLogin();
+//                okhttpTest.testQueryDevices();
+                okhttpTest.testQueryWarningInfo();
                 break;
         }
     }
 
-    private Test test = new Test();
+    private RetrofitTest retrofitTest = new RetrofitTest();
+    private OkhttpTest okhttpTest = new OkhttpTest();
 
     private void updateCurrentTab(int index) {
         for (int i = 0; i < tabViews.size(); i++) {

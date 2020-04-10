@@ -1,42 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/marker_info_bg"
-    android:orientation="vertical">
+<layout>
 
-    <TextView
-        android:id="@+id/info_tag"
-        style="@style/MarkerInfo"
-        android:gravity="center"
-        android:text="@string/track"
-        tools:text="北京测试" />
+    <data>
 
-    <TextView
-        android:id="@+id/info_imei"
-        style="@style/MarkerInfo"
-        android:text="@string/track"
-        tools:text="43042119881074336" />
+        <variable
+            name="device"
+            type="com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean.DataBean.Device" />
+    </data>
 
-    <TextView
-        android:id="@+id/info_location"
-        style="@style/MarkerInfo"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/marker_info_bg"
+        android:orientation="vertical">
 
-        android:text="@string/track"
-        tools:text="经度:122.365 纬度:365.2541" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
 
-    <TextView
-        android:id="@+id/info_number"
-        style="@style/MarkerInfo"
-        android:text="15096092544" />
+            <TextView
+                android:id="@+id/info_tag"
+                style="@style/MarkerInfo"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@{device.tag}"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="北京测试" />
 
-    <TextView
-        android:id="@+id/info_update"
-        style="@style/MarkerInfo"
-        tools:text="2020-3-25 10:25" />
-    <include
-        android:id="@+id/bottoms"
-        layout="@layout/marker_buttoms" />
+            <ImageView
+                android:id="@+id/info_close"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/close_btn"
+                android:clickable="true"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="@id/info_tag"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/info_tag" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+
+        <TextView
+            android:id="@+id/info_imei"
+            style="@style/MarkerInfo"
+            android:text="@{String.format(@string/detail_imei, device.imei)}"
+            tools:text="43042119881074336" />
+
+        <TextView
+            android:id="@+id/info_location"
+            style="@style/MarkerInfo"
+            android:text="@{String.format(@string/detail_location, device.location.longitude,device.location.latitude)}"
+            tools:text="经度:122.365 纬度:365.2541" />
+
+        <TextView
+            android:id="@+id/info_number"
+            style="@style/MarkerInfo"
+            android:text="@{String.format(@string/detail_number, device.bindNumber)}"
+            tools:text="卫星号码:15096092544" />
+
+        <TextView
+            android:id="@+id/info_update"
+            style="@style/MarkerInfo"
+            android:text="@{String.format(@string/detail_update, device.lastUpdateTime)}"
+            tools:text="2020-3-25 10:25" />
+
+        <include
+            android:id="@+id/bottoms"
+            layout="@layout/marker_buttoms" />
+
+    </LinearLayout>
+</layout>

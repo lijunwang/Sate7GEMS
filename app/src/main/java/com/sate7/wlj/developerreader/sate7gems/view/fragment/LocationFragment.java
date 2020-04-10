@@ -2,6 +2,7 @@ package com.sate7.wlj.developerreader.sate7gems.view.fragment;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,13 +23,12 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.model.LatLngBounds;
-import com.blankj.utilcode.util.PhoneUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.example.zhouwei.library.CustomPopWindow;
 import com.sate7.wlj.developerreader.sate7gems.R;
 import com.sate7.wlj.developerreader.sate7gems.databinding.FragmentLocationBinding;
+import com.sate7.wlj.developerreader.sate7gems.databinding.MarkerInfoBinding;
 import com.sate7.wlj.developerreader.sate7gems.location.MarkerAction;
 import com.sate7.wlj.developerreader.sate7gems.net.Sate7GEMSServer;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.DeviceDetailInfoBean;
@@ -115,14 +113,6 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
     public void onDestroyView() {
         super.onDestroyView();
     }
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-        }
-    };
-
     @Override
     public void onResume() {
         super.onResume();
@@ -160,13 +150,18 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
                 markerAction.start(currentDevice, MarkerAction.ACTION.SMS);
                 break;
             case R.id.marker_track:
-//                Toast.makeText(getContext(), "功能正在开发", Toast.LENGTH_SHORT).show();
                 Sate7GEMSServer.getInstance().getLocationInfoByDate(currentDevice.getImei(), new Sate7GEMSServer.LocationsCallback() {
                     @Override
                     public void onLocationsGet(ArrayList<LatLng> points) {
                         BaiduMapHelper.getInstance().drawLines(binding.mapView, points);
                     }
                 });
+                break;
+            case R.id.info_close:
+                XLog.dReport("info_close ... " + infoWindow);
+                if (infoWindow != null) {
+                    infoWindow.dissmiss();
+                }
                 break;
         }
     }
@@ -228,10 +223,13 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
     @Override
     public boolean onMarkerClick(Marker marker) {
         XLog.dReport("onMarkerClick ... " + "," + marker.getAnchorX() + "," + marker.getAnchorY());
-        EquipmentListBean.DataBean.Device device = marker.getExtraInfo().getParcelable("device");
-        currentDevice = device;
-        XLog.dReport("onMarkerClick device ... " + device + "," + device.getLocation());
-        goTo(device);
+        if (marker.getExtraInfo() != null) {
+            EquipmentListBean.DataBean.Device device = marker.getExtraInfo().getParcelable("device");
+            currentDevice = device;
+            XLog.dReport("onMarkerClick device ... " + device + "," + device.getLocation());
+            goTo(device);
+            return true;
+        }
         return false;
     }
 
@@ -265,39 +263,39 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
         }
     };
 
+    private CustomPopWindow infoWindow;
+    private boolean infoWindowShowing = false;
+    private EquipmentListBean.DataBean.Device clickDevice;
+
     private void showDetail(EquipmentListBean.DataBean.Device device) {
-        View customView = LayoutInflater.from(binding.mapView.getContext()).inflate(R.layout.marker_info, binding.mapView, false);
+        if (infoWindow == null || !clickDevice.getImei().equals(device.getImei())) {
+            clickDevice = device;
+            MarkerInfoBinding markerInfoBinding = MarkerInfoBinding.inflate(getLayoutInflater(),binding.mapView,false);
+            markerInfoBinding.setDevice(device);
+            View customView = markerInfoBinding.getRoot();
+            markerInfoBinding.infoClose.setOnClickListener(this);
+            markerInfoBinding.bottoms.markerUpload.setOnClickListener(this);
+            markerInfoBinding.bottoms.markerDial.setOnClickListener(this);
+            markerInfoBinding.bottoms.markerSms.setOnClickListener(this);
+            markerInfoBinding.bottoms.markerTrack.setOnClickListener(this);
+            infoWindow = new CustomPopWindow.PopupWindowBuilder(getContext())
+                    .size(600, 1000)
+                    .setView(customView)//显示的布局
+                    .setOutsideTouchable(false)
+                    .setOnDissmissListener(new PopupWindow.OnDismissListener() {
+                        @Override
+                        public void onDismiss() {
+                            move2Center();
+                            infoWindowShowing = false;
+                        }
+                    })
+                    .setTouchable(true)
+                    .enableOutsideTouchableDissmiss(false)
+                    .create();//创建PopupWindow
+        }
         int marginLeft = (int) (getResources().getDrawable(R.drawable.location).getIntrinsicWidth() + ScreenUtils.getScreenWidth() * 0.5 * 0.25);
-        CustomPopWindow popWindow = new CustomPopWindow.PopupWindowBuilder(getContext())
-                .size(600, 1000)
-                .setView(customView)//显示的布局
-                .setOutsideTouchable(false)
-                .setOnDissmissListener(new PopupWindow.OnDismissListener() {
-                    @Override
-                    public void onDismiss() {
-                        move2Center();
-                    }
-                })
-                .setTouchable(true)
-                .enableOutsideTouchableDissmiss(false)
-                .create()//创建PopupWindow
-                .showAtLocation(binding.mapView, Gravity.CENTER_VERTICAL | Gravity.LEFT, marginLeft, 0);
-        popWindow.getWidth();
-        TextView tag = customView.findViewById(R.id.info_tag);
-        TextView imei = customView.findViewById(R.id.info_imei);
-        TextView location = customView.findViewById(R.id.info_location);
-        TextView lineNumber = customView.findViewById(R.id.info_number);
-        TextView time = customView.findViewById(R.id.info_update);
-        tag.setText(device.getTag());
-        imei.setText(getResources().getString(R.string.detail_imei, device.getImei()));
-        location.setText(getResources().getString(R.string.detail_location, device.getLocation().longitude, device.getLocation().latitude));
-        //        lineNumber.setText(device.getLineNumber());
-        lineNumber.setText(getResources().getString(R.string.detail_number, device.getBindNumber()));
-        time.setText(getResources().getString(R.string.detail_update, device.getLastUpdateTime()));
-        customView.findViewById(R.id.bottoms).findViewById(R.id.marker_upload).setOnClickListener(this);
-        customView.findViewById(R.id.bottoms).findViewById(R.id.marker_dial).setOnClickListener(this);
-        customView.findViewById(R.id.bottoms).findViewById(R.id.marker_sms).setOnClickListener(this);
-        customView.findViewById(R.id.bottoms).findViewById(R.id.marker_track).setOnClickListener(this);
+        infoWindow.showAtLocation(binding.mapView, Gravity.CENTER_VERTICAL | Gravity.LEFT, marginLeft, 0);
+        infoWindowShowing = true;
     }
 
     private void goTo(EquipmentListBean.DataBean.Device device) {
@@ -322,8 +320,8 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void centerTo(EquipmentListBean.DataBean.Device device) {
-        XLog.dReport("centerTo ... " + device);
-        if (device != null) {
+        XLog.dReport("centerTo ... " + device + "," + infoWindowShowing);
+        if (device != null && !infoWindowShowing) {
             binding.mapView.getMap().animateMapStatus(MapStatusUpdateFactory.newLatLng(device.getLocation()));
         }
     }

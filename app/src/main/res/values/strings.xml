@@ -78,6 +78,8 @@
     <string name="select_points_clean">重新再选</string>
     <string name="warning_empty">所选设备没有警报消息</string>
     <string name="warning_no_device">请选择设备</string>
+    <string name="little_point">缺乏路径数据</string>
+    <string name="no_more">没有更多数据</string>
 
     <string-array name="test">
         <item>AAA</item>
