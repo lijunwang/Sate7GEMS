@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 
 import com.sate7.wlj.developerreader.sate7gems.databinding.ActivityMainBinding;
 import com.sate7.wlj.developerreader.sate7gems.net.OkhttpTest;
+import com.sate7.wlj.developerreader.sate7gems.net.retrofit.RetrofitServerImp;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.RetrofitTest;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.Server;
-import com.sate7.wlj.developerreader.sate7gems.net.retrofit.ServerImp;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 import com.sate7.wlj.developerreader.sate7gems.view.fragment.FenceFragment;
 import com.sate7.wlj.developerreader.sate7gems.view.fragment.LocationFragment;
@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initVies();
-
-        testLogin();
     }
 
     private void initVies() {
@@ -101,7 +99,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                retrofitTest.testCreateFence();
 //                okhttpTest.testLogin();
 //                okhttpTest.testQueryDevices();
-                okhttpTest.testQueryWarningInfo();
+//                okhttpTest.testQueryWarningInfo();
+                okhttpTest.testQueryFence();
                 break;
         }
     }
@@ -132,22 +131,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onPageScrollStateChanged(int state) {
 
-    }
-
-
-    private void testLogin() {
-        ServerImp.getInstance().login("qx_admin", "qx", new Server.LoginCallBack() {
-            @Override
-            public void onLoginSuccess(String token) {
-                Sate7EGMSApplication.setToken(token);
-//                ServerImp.getInstance().queryAllDevices(1,null);
-            }
-
-            @Override
-            public void onLoginFailed(String reason) {
-
-            }
-        });
     }
 
 }
