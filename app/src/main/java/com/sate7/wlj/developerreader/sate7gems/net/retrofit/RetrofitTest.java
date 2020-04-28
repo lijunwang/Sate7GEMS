@@ -15,7 +15,7 @@ public class RetrofitTest {
     private int pageNumber = 1;
 
     public void testWarning() {
-        ServerImp.getInstance().queryAllWarningInfo(pageNumber, "356963090002204", new Server.WarningInfoQueryCallBack() {
+        RetrofitServerImp.getInstance().queryAllWarningInfo(pageNumber, "356963090002204", new Server.WarningInfoQueryCallBack() {
             @Override
             public void onWarningInfoQuerySuccess(ArrayList<WarningInfoBean.DataBean.MessagesBean> warningMessages, boolean hasMore) {
 
@@ -31,7 +31,7 @@ public class RetrofitTest {
 
     public void testQueryFence() {
         log("fenceTest ... ");
-        ServerImp.getInstance().queryAllFence(pageNumber, new Server.FenceQueryCallBack() {
+        RetrofitServerImp.getInstance().queryAllFence(pageNumber, new Server.FenceQueryCallBack() {
             @Override
             public void onFenceQuerySuccess(ArrayList<FenceListBean.DataBean.FenceBean> fenceBeans, boolean hasMore) {
                 log("fenceTest ... " + fenceBeans + "," + hasMore);
@@ -53,11 +53,11 @@ public class RetrofitTest {
         vert.add(new LatLng(40.042365,116.6045));
         ArrayList<String> imeis = new ArrayList<>();
         imeis.add("356963090002204");
-        ServerImp.getInstance().createFence("testCreateFence","2020-4-8","2020-12-20",vert,imeis,null);
+        RetrofitServerImp.getInstance().createFence("testCreateFence","2020-4-8","2020-12-20",vert,imeis,null);
     }
 
     public void testDetail() {
-        ServerImp.getInstance().queryDetailInfo("158287024424070", new Server.DetailInfoQueryCallBack() {
+        RetrofitServerImp.getInstance().queryDetailInfo("158287024424070", new Server.DetailInfoQueryCallBack() {
             @Override
             public void onDetailQuerySuccess(DeviceDetailInfoBean device) {
                 EquipmentListBean.DataBean.Device basic = device.getData().getBasic();
@@ -76,7 +76,7 @@ public class RetrofitTest {
     public void testByDate() {
         String startTime = "2020-3-8";
         String endTime = "2020-4-8";
-        ServerImp.getInstance().queryLocationByDate(pageNumber, "158287024424070", startTime, endTime, new Server.LocationsListQueryCallBack() {
+        RetrofitServerImp.getInstance().queryLocationByDate(pageNumber, "158287024424070", startTime, endTime, new Server.LocationsListQueryCallBack() {
 
             @Override
             public void onLocationsListQuerySuccess(LogInfoByDateBean logInfoByDateBean) {
@@ -91,7 +91,7 @@ public class RetrofitTest {
     }
 
     public void updateDevice(EquipmentListBean.DataBean.Device device){
-        ServerImp.getInstance().updateDevice(device, "18682145730", new Server.DeviceUpdateCallBack() {
+        RetrofitServerImp.getInstance().updateDevicePhone(device, "18682145730", new Server.DeviceUpdateCallBack() {
             @Override
             public void onDeviceUpdateSuccess(String msg) {
 

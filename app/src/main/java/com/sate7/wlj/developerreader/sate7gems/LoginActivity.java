@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.SPUtils;
@@ -27,8 +28,20 @@ public class LoginActivity extends AppCompatActivity {
         }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
-        loginViewModel.setUserName("qx_admin");
-        loginViewModel.setPassword("qx");
+        String name = SPUtils.getInstance().getString(Constants.LOGIN_USER_NAME, "");
+        if (!TextUtils.isEmpty(name)) {
+            loginViewModel.setUserName(name);
+        }
+        String pwd = SPUtils.getInstance().getString(Constants.LOGIN_PWD, "");
+        boolean remember = SPUtils.getInstance().getBoolean(Constants.REMEMBER, false);
+        if (remember) {
+            binding.loginRemember.setChecked(true);
+        }
+        if (remember && !TextUtils.isEmpty(pwd)) {
+            loginViewModel.setPassword(pwd);
+        }
+//        loginViewModel.setUserName("qx_admin");
+//        loginViewModel.setPassword("qx");
         binding.setLoginViewMode(loginViewModel);
         loginViewModel.getLoginResult().observe(this, new Observer<String>() {
             @Override
@@ -38,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                     SPUtils.getInstance().put(Constants.NEED_LOGIN, false);
+                    SPUtils.getInstance().put(Constants.REMEMBER, binding.loginRemember.isChecked());
                 }
             }
         });

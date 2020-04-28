@@ -9,4 +9,11 @@ public interface Constants {
     String NEED_LOGIN = "need_login";
     String SELECT_LOCATION_IMEIS = "select_location_imei";
     String SELECT_WARNING_IMEIS = "select_warning_imei";
+    String LOGIN_USER_NAME = "user_name";
+    String LOGIN_PWD = "pwd";
+    String REMEMBER = "remember";
+    String SERVER_TOKEN = "token";
+    String SERVER_ORG_CODE = "org_code";
+    int MONITOR_GEOFENCE = 0;
+    int MONITOR_DATA = 1;
 }

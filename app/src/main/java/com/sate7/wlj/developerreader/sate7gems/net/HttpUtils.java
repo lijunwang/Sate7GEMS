@@ -37,7 +37,6 @@ public class HttpUtils {
 
     private static HttpUtils instance;
     private Context context;
-    private IpmlTokenGetListener listener;
     /**
      * 分页数据，每页的数量
      */
@@ -106,9 +105,6 @@ public class HttpUtils {
 
     }
 
-    public void setTokenListener(IpmlTokenGetListener listener) {
-        this.listener = listener;
-    }
 
 
     private class HttpHeadInterceptor implements Interceptor {

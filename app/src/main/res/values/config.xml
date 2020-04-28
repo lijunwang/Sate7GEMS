@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="server_retrofit">Retrofit</string>
+    <string name="server_okhttp">OkHttp</string>
+    <string name="selected_server">@string/server_retrofit</string>
+</resources>

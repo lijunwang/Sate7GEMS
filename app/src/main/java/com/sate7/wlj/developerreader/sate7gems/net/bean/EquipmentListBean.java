@@ -3,11 +3,14 @@ package com.sate7.wlj.developerreader.sate7gems.net.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
 import com.baidu.mapapi.model.LatLng;
 import com.google.gson.annotations.SerializedName;
+
+import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -125,6 +128,7 @@ public class EquipmentListBean {
             @SerializedName("bind_number")
             private String bindNumber;
             private LatLng location;
+
             public LatLng getLocation() {
                 return location;
             }
@@ -221,7 +225,7 @@ public class EquipmentListBean {
             }
 
             public String getTag() {
-                return tag;
+                return TextUtils.isEmpty(tag) ? "unknown" : tag;
             }
 
             public void setTag(String tag) {
@@ -267,7 +271,7 @@ public class EquipmentListBean {
             }
 
             public String getBindNumber() {
-                return bindNumber;
+                return TextUtils.isEmpty(bindNumber) ? "unknown" : bindNumber;
             }
 
             public void setBindNumber(String bindNumber) {

@@ -1,5 +1,6 @@
 package com.sate7.wlj.developerreader.sate7gems.view.fragment;
 
+import android.content.Intent;
 import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,24 +11,19 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.preference.PreferenceFragmentCompat;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.sate7.wlj.developerreader.sate7gems.DeviceManagerActivity;
+import com.sate7.wlj.developerreader.sate7gems.LoginActivity;
 import com.sate7.wlj.developerreader.sate7gems.R;
 import com.sate7.wlj.developerreader.sate7gems.Sate7EGMSApplication;
 import com.sate7.wlj.developerreader.sate7gems.databinding.FragmentMyselfBinding;
-import com.sate7.wlj.developerreader.sate7gems.net.Sate7GEMSServer;
 import com.sate7.wlj.developerreader.sate7gems.util.Constants;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 
 import java.util.HashSet;
 
 public class MySelfFragment extends BaseFragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
-    /*@Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        addPreferencesFromResource(R.xml.settings_preferences);
-    }*/
-
     private FragmentMyselfBinding binding;
 
     @Override
@@ -49,6 +45,7 @@ public class MySelfFragment extends BaseFragment implements CompoundButton.OnChe
         binding.settingNotfSwitch.setOnCheckedChangeListener(this);
         binding.settingNotfSwitch.setChecked(allowNotification());
         binding.settingExit.setOnClickListener(this);
+        binding.settingDeviceManage.setOnClickListener(this);
     }
 
     @Override
@@ -63,14 +60,18 @@ public class MySelfFragment extends BaseFragment implements CompoundButton.OnChe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.setting_exit:
                 XLog.dReport("exit ... ");
-                SPUtils.getInstance().put(Constants.NEED_LOGIN,true);
+                SPUtils.getInstance().put(Constants.NEED_LOGIN, true);
                 getActivity().finish();
+                startActivity(new Intent(getContext(), LoginActivity.class));
                 Sate7EGMSApplication.setEquipmentsList(null);
-                SPUtils.getInstance().put(Constants.SELECT_LOCATION_IMEIS,new HashSet<>());
-                SPUtils.getInstance().put(Constants.SELECT_WARNING_IMEIS,new HashSet<>());
+                SPUtils.getInstance().put(Constants.SELECT_LOCATION_IMEIS, new HashSet<>());
+                SPUtils.getInstance().put(Constants.SELECT_WARNING_IMEIS, new HashSet<>());
+                break;
+            case R.id.setting_device_manage:
+                startActivity(new Intent(getContext(), DeviceManagerActivity.class));
                 break;
         }
     }

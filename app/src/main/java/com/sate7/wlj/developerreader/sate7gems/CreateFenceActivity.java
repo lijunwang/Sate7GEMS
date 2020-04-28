@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -31,36 +32,50 @@ import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.internal.FlowLayout;
+import com.gyf.immersionbar.ImmersionBar;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.animator.PopupAnimator;
 import com.lxj.xpopup.core.BasePopupView;
 import com.lxj.xpopup.enums.PopupPosition;
 import com.lxj.xpopup.interfaces.XPopupCallback;
 import com.sate7.wlj.developerreader.sate7gems.databinding.ActivityCreateFenceBinding;
+import com.sate7.wlj.developerreader.sate7gems.databinding.ActivityCreateFenceDataBinding;
 import com.sate7.wlj.developerreader.sate7gems.map.BaiduMapHelper;
-import com.sate7.wlj.developerreader.sate7gems.net.Sate7GEMSServer;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean;
+import com.sate7.wlj.developerreader.sate7gems.net.bean.FenceListBean;
+import com.sate7.wlj.developerreader.sate7gems.util.Constants;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 import com.sate7.wlj.developerreader.sate7gems.view.xpop.DatePickPop;
 import com.sate7.wlj.developerreader.sate7gems.view.xpop.DeviceAddPop;
 import com.sate7.wlj.developerreader.sate7gems.view.xpop.FenceMapPointPop;
+import com.sate7.wlj.developerreader.sate7gems.viewmodel.DetailViewMode;
 import com.sate7.wlj.developerreader.sate7gems.viewmodel.FenceViewModel;
 
+import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 public class CreateFenceActivity extends AppCompatActivity implements View.OnClickListener {
     private ActivityCreateFenceBinding binding;
+    private ActivityCreateFenceDataBinding bindingData;
     private DatePickPop datePickPopStart;
     private DatePickPop datePickPopEnd;
     private DeviceAddPop deviceAddPop;
+    private boolean hasInit = false;
+    private DetailViewMode detailViewMode;
+    private ArrayList<EquipmentListBean.DataBean.Device> copyDevice = new ArrayList<>();
     private XPopupCallback devicePopCallback = new XPopupCallback() {
         @Override
         public void onCreated() {
-
+            XLog.dReport("creatActivity beforeShow showSelected ... " + copyDevice);
+            deviceAddPop.showSelect(copyDevice);
+            hasInit = true;
         }
 
         @Override
@@ -76,16 +91,17 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
         @Override
         public void onDismiss() {
             ArrayList<EquipmentListBean.DataBean.Device> devices = deviceAddPop.getSelectedDevice();
-            binding.fenceCreateFlex.removeAllViews();
-            for (EquipmentListBean.DataBean.Device device : devices) {
-                TextView info = new TextView(CreateFenceActivity.this);
-                info.setTextSize(8);
-                info.setBackgroundResource(R.drawable.device_bg);
-                info.setGravity(Gravity.CENTER);
-                info.setText(device.getImei() + (TextUtils.isEmpty(device.getTag()) ? "" : "\n" + device.getTag()));
-                binding.fenceCreateFlex.addView(info);
+            if (binding == null) {
+                bindingData.fenceCreateFlex.removeAllViews();
+            } else {
+                binding.fenceCreateFlex.removeAllViews();
             }
 
+            copyDevice.clear();
+            XLog.dReport("creatActivity showSelected onDismiss ... " + devices);
+            for (EquipmentListBean.DataBean.Device device : devices) {
+                addDeviceToFlexbox(device);
+            }
         }
 
         @Override
@@ -93,6 +109,20 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
             return false;
         }
     };
+
+    private void addDeviceToFlexbox(EquipmentListBean.DataBean.Device device) {
+        TextView info = new TextView(CreateFenceActivity.this);
+        info.setTextSize(8);
+        info.setBackgroundResource(R.drawable.device_bg);
+        info.setGravity(Gravity.CENTER);
+        info.setText(device.getImei() + (TextUtils.isEmpty(device.getTag()) ? "" : "\n" + device.getTag()));
+        if (binding == null) {
+            bindingData.fenceCreateFlex.addView(info);
+        } else {
+            binding.fenceCreateFlex.addView(info);
+        }
+    }
+
     private FenceMapPointPop mapPop;
     private ArrayList<LatLng> mapClickedPoint = new ArrayList<>();
     private BasePopupView baseMapPop;
@@ -106,13 +136,21 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
     private FenceViewModel fenceViewModel;
     private final String MAOHAO = "：";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_fence);
+        int type = getType();
+        XLog.dReport("CreateFence type == " + type);
+        if (type == Constants.MONITOR_GEOFENCE) {
+            //default
+            binding = DataBindingUtil.setContentView(this, R.layout.activity_create_fence);
+        } else {
+            bindingData = DataBindingUtil.setContentView(this, R.layout.activity_create_fence_data);
+        }
+
         initViews();
         initToolBar();
+        ImmersionBar.with(this).fitsSystemWindows(true).statusBarDarkFont(true).statusBarColor(R.color.bottom_bg).init();
         fenceViewModel = ViewModelProviders.of(this).get(FenceViewModel.class);
         fenceViewModel.getCreateResult().observe(this, new Observer<String>() {
             @Override
@@ -120,92 +158,202 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
                 XLog.dReport("create result ... " + s);
                 if (s.trim().contains("SUCCESS")) {
                     ToastUtils.showShort(R.string.create_success);
+                    setResult(Activity.RESULT_OK);
                     finish();
                 } else {
-                    ToastUtils.showShort(R.string.create_failed);
+                    ToastUtils.showShort(s);
+                    setResult(Activity.RESULT_CANCELED);
+                    finish();
                 }
 
             }
         });
+
+        detailViewMode = ViewModelProviders.of(this).get(DetailViewMode.class);
+        detailViewMode.getLatestLocation().observe(this, new Observer<EquipmentListBean.DataBean.Device>() {
+            @Override
+            public void onChanged(EquipmentListBean.DataBean.Device device) {
+                addDeviceToFlexbox(device);
+                copyDevice.add(device);
+            }
+        });
+        handleCopyFence();
+    }
+
+    private int getType() {
+        int type = getIntent().getIntExtra("type", -1);
+        XLog.dReport("CreateFence getType ... " + type);
+        //this is new
+        if (type == Constants.MONITOR_GEOFENCE) {
+            return Constants.MONITOR_GEOFENCE;
+        } else if (type == Constants.MONITOR_DATA) {
+            return Constants.MONITOR_DATA;
+        }
+        //copy
+        FenceListBean.DataBean.FenceBean fenceBean = getIntent().getParcelableExtra("FenceBean");
+        if (fenceBean != null && fenceBean.getMdt().equals("GEOFENCE")) {
+            return Constants.MONITOR_GEOFENCE;
+        } else if (fenceBean != null && "STATE".equals(fenceBean.getMdt())) {
+            return Constants.MONITOR_DATA;
+        }
+        return Constants.MONITOR_GEOFENCE;
+    }
+
+    private void changeTitle() {
+        int type = getType();
+        switch (type) {
+            case Constants.MONITOR_DATA:
+                getSupportActionBar().setTitle(R.string.monitor_data);
+                break;
+            case Constants.MONITOR_GEOFENCE:
+            default:
+                getSupportActionBar().setTitle(R.string.monitor_fence);
+                break;
+        }
+    }
+
+    private void handleCopyFence() {
+        FenceListBean.DataBean.FenceBean fenceBean = getIntent().getParcelableExtra("FenceBean");
+        if (fenceBean != null && binding != null) {
+            double[] geo = getIntent().getDoubleArrayExtra("geo");
+            XLog.dReport("handleCopyFence fenceBean ... " + fenceBean);
+            XLog.dReport("handleCopyFence geo ... " + Arrays.toString(geo));
+            XLog.dReport("handleCopyFence mdt ... " + fenceBean.getMdt());
+            binding.createFenceET.setText(fenceBean.getName());
+            binding.createFenceStartTv.setText(getResources().getString(R.string.start_time) + MAOHAO + fenceBean.getStartDate());
+            binding.createFenceEndTv.setText(getResources().getString(R.string.end_time) + MAOHAO + fenceBean.getEndDate());
+            try {
+                startCalendar.setTime(simpleDateFormat.parse(fenceBean.getStartDate()));
+                endCalendar.setTime(simpleDateFormat.parse(fenceBean.getEndDate()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                XLog.dReport("handleCopyFence ParseException ... " + e.getMessage());
+            }
+            //Add devices
+            for (String imei : fenceBean.getImeis()) {
+                detailViewMode.queryLatestLocationInfo(imei);
+            }
+            try {
+                binding.createFenceP1Lng.setText("" + geo[0]);
+                binding.createFenceP1Lat.setText("" + geo[1]);
+                binding.createFenceP2Lng.setText("" + geo[2]);
+                binding.createFenceP2Lat.setText("" + geo[3]);
+                binding.createFenceP3Lng.setText("" + geo[4]);
+                binding.createFenceP3Lat.setText("" + geo[5]);
+                binding.createFenceP4Lng.setText("" + geo[6]);
+                binding.createFenceP4Lat.setText("" + geo[7]);
+            } catch (Exception e) {
+                XLog.dReport("Exception ... " + e.getMessage());
+            }
+        } else if (fenceBean != null) {
+            double[] geo = getIntent().getDoubleArrayExtra("geo");
+            XLog.dReport("handleCopyFence bindingData fenceBean ... " + fenceBean);
+            XLog.dReport("handleCopyFence bindingData geo ... " + Arrays.toString(geo));
+            XLog.dReport("handleCopyFence bindingData mdt ... " + fenceBean.getMdt());
+            bindingData.createFenceET.setText(fenceBean.getName());
+            bindingData.createFenceStartTv.setText(getResources().getString(R.string.start_time) + MAOHAO + fenceBean.getStartDate());
+            bindingData.createFenceEndTv.setText(getResources().getString(R.string.end_time) + MAOHAO + fenceBean.getEndDate());
+            try {
+                startCalendar.setTime(simpleDateFormat.parse(fenceBean.getStartDate()));
+                endCalendar.setTime(simpleDateFormat.parse(fenceBean.getEndDate()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                XLog.dReport("handleCopyFence ParseException ... " + e.getMessage());
+            }
+            //Add devices
+            for (String imei : fenceBean.getImeis()) {
+                detailViewMode.queryLatestLocationInfo(imei);
+            }
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mapPop.onPause();
+        if (mapPop != null) {
+            mapPop.onPause();
+        }
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        mapPop.onResume();
+        if (mapPop != null) {
+            mapPop.onResume();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mapPop.onDestroy();
+        if (mapPop != null) {
+            mapPop.onDestroy();
+        }
     }
 
     private void initToolBar() {
-        setSupportActionBar(binding.toolBarContainer.findViewById(R.id.toolbar));
-        getSupportActionBar().setTitle(R.string.create_fence);
+        setSupportActionBar(getType() == Constants.MONITOR_GEOFENCE ? binding.toolBarContainer.findViewById(R.id.toolbar) : bindingData.toolBarContainer.findViewById(R.id.toolbar));
+        getSupportActionBar().setTitle(getType() == Constants.MONITOR_GEOFENCE ? R.string.create_fence : R.string.create_data);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        changeTitle();
     }
 
 
     private void initViews() {
-        binding.createFenceStartTv.setOnClickListener(this);
-        binding.createFenceEndTv.setOnClickListener(this);
-        binding.fenceAddDevice.setOnClickListener(this);
-        binding.fenceAddDeviceImg.setOnClickListener(this);
-        binding.fencePointsMap.setOnClickListener(this);
-        binding.fencePointsClean.setOnClickListener(this);
+        if (getType() == Constants.MONITOR_GEOFENCE) {
+            binding.createFenceStartTv.setOnClickListener(this);
+            binding.createFenceEndTv.setOnClickListener(this);
+            binding.fenceAddDevice.setOnClickListener(this);
+            binding.fenceAddDeviceImg.setOnClickListener(this);
+            binding.fencePointsMap.setOnClickListener(this);
+            binding.fencePointsClean.setOnClickListener(this);
+            mapPop = new FenceMapPointPop(this);
+            mapPop.setOnMapClickedListener(new FenceMapPointPop.OnMapClickListener() {
+                @Override
+                public void onMapClicked(MapView mapView, LatLng latLng) {
+                    int size = mapClickedPoint.size();
+                    XLog.dReport("activity onMapClicked ... " + size);
+                    if (size <= 4) {
+                        mapClickedPoint.add(latLng);
+                        size = mapClickedPoint.size();
+                        for (int i = 0; i < size; i++) {
+                            switch (i) {
+                                case 0:
+                                    binding.createFenceP1Lat.setText("" + mapClickedPoint.get(i).latitude);
+                                    binding.createFenceP1Lng.setText("" + mapClickedPoint.get(i).longitude);
+                                    break;
+                                case 1:
+                                    binding.createFenceP2Lat.setText("" + mapClickedPoint.get(i).latitude);
+                                    binding.createFenceP2Lng.setText("" + mapClickedPoint.get(i).longitude);
+                                    break;
+                                case 2:
+                                    binding.createFenceP3Lat.setText("" + mapClickedPoint.get(i).latitude);
+                                    binding.createFenceP3Lng.setText("" + mapClickedPoint.get(i).longitude);
+                                    break;
+                                case 3:
+                                    binding.createFenceP4Lat.setText("" + mapClickedPoint.get(i).latitude);
+                                    binding.createFenceP4Lng.setText("" + mapClickedPoint.get(i).longitude);
+                                    break;
+                            }
+                        }
+                        BaiduMapHelper.getInstance().addPoint(mapView, latLng);
+                    }
+
+                }
+            });
+        } else {
+            bindingData.createFenceStartTv.setOnClickListener(this);
+            bindingData.createFenceEndTv.setOnClickListener(this);
+            bindingData.fenceAddDevice.setOnClickListener(this);
+            bindingData.fenceAddDeviceImg.setOnClickListener(this);
+        }
         datePickPopStart = new DatePickPop(this, startListener);
         datePickPopEnd = new DatePickPop(this, endListener);
         deviceAddPop = new DeviceAddPop(this);
-        mapPop = new FenceMapPointPop(this);
-        mapPop.setOnMapClickedListener(new FenceMapPointPop.OnMapClickListener() {
-            @Override
-            public void onMapClicked(MapView mapView, LatLng latLng) {
-                int size = mapClickedPoint.size();
-                XLog.dReport("activity onMapClicked ... " + size);
-                if (size <= 4) {
-                    mapClickedPoint.add(latLng);
-                    size = mapClickedPoint.size();
-                    for (int i = 0; i < size; i++) {
-                        switch (i) {
-                            case 0:
-                                binding.createFenceP1Lat.setText("" + mapClickedPoint.get(i).latitude);
-                                binding.createFenceP1Lng.setText("" + mapClickedPoint.get(i).longitude);
-                                break;
-                            case 1:
-                                binding.createFenceP2Lat.setText("" + mapClickedPoint.get(i).latitude);
-                                binding.createFenceP2Lng.setText("" + mapClickedPoint.get(i).longitude);
-                                break;
-                            case 2:
-                                binding.createFenceP3Lat.setText("" + mapClickedPoint.get(i).latitude);
-                                binding.createFenceP3Lng.setText("" + mapClickedPoint.get(i).longitude);
-                                break;
-                            case 3:
-                                binding.createFenceP4Lat.setText("" + mapClickedPoint.get(i).latitude);
-                                binding.createFenceP4Lng.setText("" + mapClickedPoint.get(i).longitude);
-                                break;
-                        }
-                    }
-                    BaiduMapHelper.getInstance().addPoint(mapView, latLng);
-                }
-
-            }
-        });
         startCalendar = Calendar.getInstance();
         endCalendar = Calendar.getInstance();
-    }
-
-    public static void start(Context context) {
-        context.startActivity(new Intent(context, CreateFenceActivity.class));
     }
 
     @Override
@@ -218,8 +366,11 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.create_save:
-                if (check()) {
+                if (getType() == Constants.MONITOR_GEOFENCE && checkMonitorFence()) {
                     fenceViewModel.createFence(fenceName, startTime, endTime, fencePoints, selectDeviceImeis);
+                } else if (getType() == Constants.MONITOR_DATA && checkMonitorData()) {
+//                    fenceViewModel.createFence(fenceName, startTime, endTime, fencePoints, selectDeviceImeis);
+                    fenceViewModel.createDataMonitor(fenceName, startTime, endTime, selectDeviceImeis, monitorType, monitorCondition, monitorValue);
                 }
                 break;
             case android.R.id.home:
@@ -305,22 +456,28 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
         @Override
         public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             XLog.dReport("startListener onDateChanged ... " + year + "," + monthOfYear + "," + dayOfMonth);
-//            binding.createFenceStartTv.setText(getResources().getString(R.string.start_time) + ":" + year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
             startCalendar.set(Calendar.YEAR, year);
             startCalendar.set(Calendar.MONTH, monthOfYear);
             startCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            binding.createFenceStartTv.setText(getResources().getString(R.string.start_time) + MAOHAO + simpleDateFormat.format(startCalendar.getTime()));
+            if (binding == null) {
+                bindingData.createFenceStartTv.setText(getResources().getString(R.string.start_time) + MAOHAO + simpleDateFormat.format(startCalendar.getTime()));
+            } else {
+                binding.createFenceStartTv.setText(getResources().getString(R.string.start_time) + MAOHAO + simpleDateFormat.format(startCalendar.getTime()));
+            }
         }
     };
     private DatePicker.OnDateChangedListener endListener = new DatePicker.OnDateChangedListener() {
         @Override
         public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             XLog.dReport("endListener onDateChanged ... " + year + "," + monthOfYear + "," + dayOfMonth);
-//            binding.createFenceEndTv.setText(getResources().getString(R.string.end_time) + ":" + year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
             endCalendar.set(Calendar.YEAR, year);
             endCalendar.set(Calendar.MONTH, monthOfYear);
             endCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            binding.createFenceEndTv.setText(getResources().getString(R.string.end_time) + "：" + simpleDateFormat.format(endCalendar.getTime()));
+            if (binding == null) {
+                bindingData.createFenceEndTv.setText(getResources().getString(R.string.end_time) + "：" + simpleDateFormat.format(endCalendar.getTime()));
+            } else {
+                binding.createFenceEndTv.setText(getResources().getString(R.string.end_time) + "：" + simpleDateFormat.format(endCalendar.getTime()));
+            }
         }
     };
 
@@ -328,8 +485,12 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
     private String startTime;
     private String endTime;
     private ArrayList<String> selectDeviceImeis = new ArrayList<>();
+    private String monitorType;
+    private String monitorCondition;
+    private String monitorValue;
 
-    private boolean check() {
+    //围栏监控
+    private boolean checkMonitorFence() {
         XLog.dReport("check ....");
         fenceName = binding.createFenceET.getText().toString().trim();
         if (TextUtils.isEmpty(fenceName)) {
@@ -339,7 +500,9 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
         startTime = binding.createFenceStartTv.getText().toString().trim();
         endTime = binding.createFenceEndTv.getText().toString().trim();
         if (TextUtils.isEmpty(startTime) ||
-                TextUtils.isEmpty(endTime)) {
+                TextUtils.isEmpty(endTime) ||
+                !startTime.contains(MAOHAO) ||
+                !endTime.contains(MAOHAO)) {
             ToastUtils.showShort(R.string.fence_start_end_empty);
             return false;
         } else {
@@ -350,7 +513,12 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
             ToastUtils.showShort(R.string.fence_end_too_late);
             return false;
         }
-        ArrayList<EquipmentListBean.DataBean.Device> devices = deviceAddPop.getSelectedDevice();
+        ArrayList<EquipmentListBean.DataBean.Device> devices = null;
+        if (deviceAddPop == null || !hasInit) {
+            devices = copyDevice;
+        } else {
+            devices = deviceAddPop.getSelectedDevice();
+        }
         if (devices.size() == 0) {
             ToastUtils.showShort(R.string.fence_add_device);
             return false;
@@ -394,6 +562,59 @@ public class CreateFenceActivity extends AppCompatActivity implements View.OnCli
             ToastUtils.showShort(R.string.fence_point_pair);
             return false;
         }
+        return true;
+    }
+
+
+    //数据监控
+    private boolean checkMonitorData() {
+        fenceName = bindingData.createFenceET.getText().toString().trim();
+        if (TextUtils.isEmpty(fenceName)) {
+            bindingData.createFenceET.setError(getResources().getString(R.string.fence_name_empty));
+            return false;
+        }
+        startTime = bindingData.createFenceStartTv.getText().toString().trim();
+        endTime = bindingData.createFenceEndTv.getText().toString().trim();
+        if (TextUtils.isEmpty(startTime) ||
+                TextUtils.isEmpty(endTime) ||
+                !startTime.contains(MAOHAO) ||
+                !endTime.contains(MAOHAO)) {
+            ToastUtils.showShort(R.string.fence_start_end_empty);
+            return false;
+        } else {
+            startTime = startTime.split(MAOHAO)[1];
+            endTime = endTime.split(MAOHAO)[1];
+        }
+        if (endCalendar.getTime().getTime() <= System.currentTimeMillis()) {
+            ToastUtils.showShort(R.string.fence_end_too_late);
+            return false;
+        }
+        ArrayList<EquipmentListBean.DataBean.Device> devices = null;
+        if (deviceAddPop == null || !hasInit) {
+            devices = copyDevice;
+        } else {
+            devices = deviceAddPop.getSelectedDevice();
+        }
+        if (devices.size() == 0) {
+            ToastUtils.showShort(R.string.fence_add_device);
+            return false;
+        } else {
+            selectDeviceImeis.clear();
+            for (EquipmentListBean.DataBean.Device device : devices) {
+                selectDeviceImeis.add(device.getImei());
+            }
+        }
+        int type = bindingData.monitorSpType.getSelectedItemPosition();
+        int condition = bindingData.monitorSpCondition.getSelectedItemPosition();
+        String value = bindingData.monitorValue.getText().toString();
+        if (TextUtils.isEmpty(value)) {
+            bindingData.monitorValue.setError(getResources().getString(R.string.monitor_data_value_error));
+            return false;
+        }
+        monitorType = getResources().getStringArray(R.array.monitorType)[type];
+        monitorCondition = getResources().getStringArray(R.array.monitorCondition)[condition];
+        monitorValue = value;
+        XLog.dReport("checkMonitorData ..." + type + "," + condition + "," + value);
         return true;
     }
 }

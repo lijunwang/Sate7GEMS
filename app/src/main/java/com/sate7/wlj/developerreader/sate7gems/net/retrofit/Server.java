@@ -17,6 +17,9 @@ import java.util.ArrayList;
 public interface Server {
     //每页加载的数量
     int PageSize = 30;
+    //围栏比较特殊
+    int PageSizeForFence = 100;
+
     //登陆相关
     interface LoginCallBack {
         void onLoginSuccess(String token);
@@ -30,56 +33,79 @@ public interface Server {
     void queryAllDevices(int pageNub, DevicesQueryCallBack callBack);
 
     interface DevicesQueryCallBack {
-        void onDeviceQuerySuccess(ArrayList<EquipmentListBean.DataBean.Device> devices,boolean hasMore);
+        void onDeviceQuerySuccess(ArrayList<EquipmentListBean.DataBean.Device> devices, boolean hasMore);
+
         void onDeviceQueryFailed(String msg);
     }
 
     //获取报警信息
-    void queryAllWarningInfo(int pageNub,String imei,WarningInfoQueryCallBack callBack);
-    interface WarningInfoQueryCallBack{
-        void onWarningInfoQuerySuccess(ArrayList<WarningInfoBean.DataBean.MessagesBean> warningMessages,boolean hasMore);
+    void queryAllWarningInfo(int pageNub, String imei, WarningInfoQueryCallBack callBack);
+
+    interface WarningInfoQueryCallBack {
+        void onWarningInfoQuerySuccess(ArrayList<WarningInfoBean.DataBean.MessagesBean> warningMessages, boolean hasMore);
+
         void onWarningInfoQueryFailed(String msg);
     }
 
+    //首页警报消息
+    void queryHomePageWarningInfo(int pageNub, WarningInfoQueryCallBack callBack);
+
     //创建围栏
     /*
-    *   @para vertexList 顶点信息
-    *   @para imeiList   包含哪些设备，即当前的围栏对哪些设备有效;
-    */
+     *   @para vertexList 顶点信息
+     *   @para imeiList   包含哪些设备，即当前的围栏对哪些设备有效;
+     */
     void createFence(String name, String startTime, String endTime, ArrayList<LatLng> vertexList, ArrayList<String> imeiList, FenceCreateCallBack callBack);
-    interface FenceCreateCallBack{
+
+    //状态监听
+    void createDataMonitor(String name, String startTime, String endTime, ArrayList<String> imeiList, String label, String operation, String value, FenceCreateCallBack callBack);
+
+    interface FenceCreateCallBack {
         void onFenceCreateSuccess(String msg);
+
         void onFenceCreateFailed(String msg);
     }
 
+
     //获取围栏信息
-    void queryAllFence(int pageNub,FenceQueryCallBack callBack);
-    interface FenceQueryCallBack{
+    void queryAllFence(int pageNub, FenceQueryCallBack callBack);
+
+    interface FenceQueryCallBack {
         void onFenceQuerySuccess(ArrayList<FenceListBean.DataBean.FenceBean> fenceList, boolean hasMore);
+
         void onFenceQueryFailed(String msg);
     }
 
     //查询设备详情,包括最新的位置信息
-    void queryDetailInfo(String imei,DetailInfoQueryCallBack callBack);
-    interface DetailInfoQueryCallBack{
+    void queryDetailInfo(String imei, DetailInfoQueryCallBack callBack);
+
+    interface DetailInfoQueryCallBack {
         void onDetailQuerySuccess(DeviceDetailInfoBean device);
+
         void onDetailQueryFailed(String msg);
     }
 
     //分段查询位置信息
-    void queryLocationByDate(int pageNum,String imei,String start,String endTime,LocationsListQueryCallBack callBack);
-    interface LocationsListQueryCallBack{
+    void queryLocationByDate(int pageNum, String imei, String start, String endTime, LocationsListQueryCallBack callBack);
+
+    interface LocationsListQueryCallBack {
         void onLocationsListQuerySuccess(LogInfoByDateBean logInfoByDateBean);
+
         void onLocationsListQueryFailed(String msg);
     }
 
     //更新设备信息(修改电话号码)
-    void updateDevice(EquipmentListBean.DataBean.Device device,String phoneNumber,DeviceUpdateCallBack callBack);
-    interface DeviceUpdateCallBack{
+    void updateDevicePhone(EquipmentListBean.DataBean.Device device, String phoneNumber, DeviceUpdateCallBack callBack);
+    //更新设备信息(修改标签)
+    void updateDeviceTag(EquipmentListBean.DataBean.Device device, String tag, DeviceUpdateCallBack callBack);
+    //更新设备上报频率(
+    void updateDeviceFrq(EquipmentListBean.DataBean.Device device, String frq, DeviceUpdateCallBack callBack);
+
+    interface DeviceUpdateCallBack {
         void onDeviceUpdateSuccess(String msg);
+
         void onDeviceUpdateFailed(String msg);
     }
-
 
 
 }

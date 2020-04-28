@@ -12,6 +12,7 @@ public interface NetBase {
     String LIST_EQUIPMENT_URL = BASE_URL + "/api/v1/device/query/list";
     String GET_DEVICE_INFO = BASE_URL + "/api/v1/device/query/imei/";
     String GET_WARNING_INFO = BASE_URL + "/api/v1/message/query/imei/warning/";
+    String GET_HOME_PAGE_WARNING_INFO = BASE_URL + "/api/v1/message/query/warning";
     String UPDATE_NUMBER_INFO = BASE_URL + "/api/v1/device/tag/update";
 //    String FENCE_LIST = BASE_URL + "/api/v1/task/query/list/";//{org_code}
     String FENCE_LIST = BASE_URL + "/api/v1/task/list/";//{org_code}

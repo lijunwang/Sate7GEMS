@@ -19,8 +19,8 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
     </style>
 
     <style name="SettingsTextView">
@@ -54,18 +54,37 @@
         <item name="android:scaleType">fitCenter</item>
         <item name="android:background">@null</item>
     </style>
+
     <style name="MarkerInfoTextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="ManageDeviceTv">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:marqueeRepeatLimit">-1</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
     <style name="DivideLine">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_height">1dp</item>
         <item name="android:background">@color/divide_line_bg</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ToolBar" parent="Theme.AppCompat.NoActionBar">
+        <!--这个是toolbar文字的颜色-->
+        <item name="android:textColorPrimary">@color/toolBarText</item>
+        <!--这个是toolbar左边三道杆的颜色-->
+        <item name="android:textColorSecondary">@color/toolBarToggle</item>
+    </style>
 </resources>

@@ -1,9 +1,14 @@
 package com.sate7.wlj.developerreader.sate7gems.net.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
+import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FenceListBean {
@@ -102,7 +107,7 @@ public class FenceListBean {
             this.fenceList = fenceList;
         }
 
-        public static class FenceBean {
+        public static class FenceBean implements Parcelable {
             /**
              * name : 0
              * imeis : []
@@ -125,9 +130,30 @@ public class FenceListBean {
             private List<String> imeis;
             @SerializedName("geofence_data")
             private List<Double> geofenceData;
-
             //add by wlj for if fence list all its devices
             private boolean isOpened = false;
+
+            protected FenceBean(Parcel in) {
+                name = in.readString();
+                startDate = in.readString();
+                endDate = in.readString();
+                mdt = in.readString();
+                mi = in.readString();
+                imeis = in.createStringArrayList();
+                isOpened = in.readByte() != 0;
+            }
+
+            public static final Creator<FenceBean> CREATOR = new Creator<FenceBean>() {
+                @Override
+                public FenceBean createFromParcel(Parcel in) {
+                    return new FenceBean(in);
+                }
+
+                @Override
+                public FenceBean[] newArray(int size) {
+                    return new FenceBean[size];
+                }
+            };
 
             public boolean isOpened() {
                 return isOpened;
@@ -199,6 +225,7 @@ public class FenceListBean {
 
             public void setGeofenceData(List<Double> geofenceData) {
                 this.geofenceData = geofenceData;
+                XLog.dReport("wlj debug setGeofenceData ... " + geofenceData);
             }
 
             @NonNull
@@ -210,11 +237,29 @@ public class FenceListBean {
                         append("name=").append(name).append(",").
                         append("startDate=").append(startDate).append(",").
                         append("endDate=").append(endDate).append(",").
-                        append("imeis=").append(imeis.toString()).
+                        append("type=").append(mdt).append(",").
+                        append("imeis=").append(imeis.toString()).append(",").
+                        append("geoData=").append(geofenceData).append(",").
                         append("}");
 
 
                 return stringBuffer.toString();
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(name);
+                dest.writeString(startDate);
+                dest.writeString(endDate);
+                dest.writeString(mdt);
+                dest.writeString(mi);
+                dest.writeStringList(imeis);
+                dest.writeByte((byte) (isOpened ? 1 : 0));
             }
         }
     }

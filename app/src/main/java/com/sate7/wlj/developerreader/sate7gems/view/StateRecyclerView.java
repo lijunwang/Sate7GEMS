@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
@@ -119,6 +120,7 @@ public class StateRecyclerView extends RecyclerView implements ValueAnimator.Ani
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         getLayoutParams().height = (int) animation.getAnimatedValue();
+        XLog.dReport("onAnimationUpdate ... " + animation.getAnimatedValue());
         requestLayout();
     }
 

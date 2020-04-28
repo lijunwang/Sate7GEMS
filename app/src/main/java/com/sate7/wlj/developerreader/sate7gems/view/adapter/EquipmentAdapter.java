@@ -3,6 +3,7 @@ package com.sate7.wlj.developerreader.sate7gems.view.adapter;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,21 +52,15 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
         XLog.dReport("selectedDeviceImei ... " + type + "," + selectedDeviceImei);
     }
 
-    public EquipmentAdapter(Context context, ArrayList<EquipmentListBean.DataBean.Device> devices) {
-        this.devices = devices;
-        this.context = context;
-    }
-
     public ArrayList<EquipmentListBean.DataBean.Device> getSelectedDevices() {
         ArrayList<EquipmentListBean.DataBean.Device> selectedDevices = new ArrayList<>();
-        if(type != null){
+        if (type != null) {
             for (EquipmentListBean.DataBean.Device device : devices) {
                 if (selectedDeviceImei.contains(device.getImei())) {
-                    XLog.dReport("getSelectedDevices type " + type + device.getTag());
                     selectedDevices.add(device);
                 }
             }
-        }else{
+        } else {
             for (EquipmentListBean.DataBean.Device device : devices) {
                 if (device.isChecked()) {
                     XLog.dReport("getSelectedDevices bb " + device.getTag());
@@ -74,6 +69,19 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
             }
         }
         return selectedDevices;
+    }
+
+    public void showSelected(ArrayList<EquipmentListBean.DataBean.Device> checkedDevices) {
+        for (EquipmentListBean.DataBean.Device device : checkedDevices) {
+            for (EquipmentListBean.DataBean.Device d : devices) {
+                if(device.getImei().equals(d.getImei())){
+                    XLog.dReport("showSelected ... " + d);
+                    d.setChecked(true);
+                    break;
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
     public ArrayList<EquipmentListBean.DataBean.Device> getSelectedDevices(TYPE type) {
@@ -106,7 +114,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
         XLog.dReport("selectedDeviceImei onToggled ... " + type + "," + selectImei);
     }
 
-    private void save2SP(){
+    private void save2SP() {
         XLog.dReport("save2SP ... " + type + "," + selectedDeviceImei);
         switch (type) {
             case WARNING:
@@ -120,13 +128,25 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
 
     public void update(ArrayList<EquipmentListBean.DataBean.Device> devices) {
         this.devices = devices;
-//        for (EquipmentListBean.DataBean.Device device : devices) {
-//            XLog.dReport("checked debug update 22 " + device.getTag() + "," + device.isChecked());
-//            if (device.isChecked()) {
-//                XLog.dReport("checked debug update " + device.getTag() + "," + device.getImei());
-//            }
-//        }
         notifyDataSetChanged();
+    }
+
+    public void append(ArrayList<EquipmentListBean.DataBean.Device> devices) {
+        this.devices.addAll(devices);
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<EquipmentListBean.DataBean.Device> getDevices() {
+        return devices;
+    }
+
+    public void update(ArrayList<EquipmentListBean.DataBean.Device> devices, boolean append) {
+        int position = devices.size();
+        if (append) {
+            this.devices.addAll(devices);
+        }
+
+        notifyItemInserted(position);
     }
 
     @NonNull
@@ -162,20 +182,21 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
                     allChecked = isChecked;
                     for (EquipmentListBean.DataBean.Device device : devices) {
                         device.setChecked(allChecked);
-                        if(isChecked){
+                        if (isChecked) {
                             selectedDeviceImei.add(device.getImei());
-                        }else{
+                        } else {
                             selectedDeviceImei.clear();
                         }
 
                     }
-                    save2SP();
+//                    save2SP();
                     mHandler.sendEmptyMessageDelayed(MSG_UPDATE, 500);
                 } else {
                     int realPosition = position - 1;
                     EquipmentListBean.DataBean.Device device = devices.get(realPosition);
                     device.setChecked(isChecked);
-                    if(type != null){
+                    XLog.dReport("selected debug .... " + device.getTag() + "," + isChecked + "," + type);
+                    if (type != null) {
                         if (isChecked && !selectedDeviceImei.contains(device.getImei())) {
                             selectedDeviceImei.add(device.getImei());
                         }
@@ -191,6 +212,8 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
                                 }
                             }
                         }
+                    }else{
+
                     }
                 }
             }
@@ -204,18 +227,24 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
         } else {
             int realPosition = position - 1;
             EquipmentListBean.DataBean.Device device = devices.get(realPosition);
-//            equipmentHolder.checkBox.setChecked(device.isChecked());
             if (type != null) {
                 XLog.dReport("selectedDeviceImei bind check ... " + type + "," + device.getTag() + "," + selectedDeviceImei + "," + device.isChecked() + "," + selectedDeviceImei.contains(device.getImei()));
                 equipmentHolder.checkBox.setChecked((selectedDeviceImei.contains(device.getImei())));
-//                equipmentHolder.checkBox.setChecked((selectedDeviceImei.contains(device.getImei())) & device.isChecked());
             } else {
                 equipmentHolder.checkBox.setChecked(device.isChecked());
             }
             equipmentHolder.imei.setText(device.getImei());
-            equipmentHolder.tag.setText(device.getTag());
-            equipmentHolder.number.setText("");
+            if (TextUtils.isEmpty(device.getTag())) {
+                equipmentHolder.tag.setVisibility(View.GONE);
+            } else {
+                equipmentHolder.tag.setText(device.getTag());
+                equipmentHolder.tag.setVisibility(View.VISIBLE);
+            }
+//            equipmentHolder.number.setText("");
         }
+
+        //LiuQiong design
+        equipmentHolder.container.setBackgroundColor(context.getResources().getColor(position % 2 == 0 ? R.color.item_gray : R.color.colorWhite));
 
     }
 

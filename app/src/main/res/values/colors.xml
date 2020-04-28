@@ -2,10 +2,23 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorWhite2">#FAFAFA</color>
+    <color name="toolBar">#F9F9F9</color>
+    <color name="toolBarText">#3E3E3E</color>
+    <color name="toolBarToggle">#1A65C1</color>
     <color name="colorBlue1">#1A65C1</color>
+    <color name="colorBlueSelected">#aa1A65C1</color>
     <color name="colorBlue2">#0669B2</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="bottom_bg">#ffeeeeee</color>
-    <color name="divide_line_bg">#353C46</color>
+    <color name="bottom_bg">#eeeeee</color>
+    <color name="divide_line_bg">@color/qmui_config_color_gray_9</color>
+
+    <color name="color_recycler_bg">@color/colorWhite</color>
+    <color name="color_item_bg">@color/colorPrimary</color>
+    <color name="color_refresh_bg">@color/color_item_bg</color>
+    <color name="color_refresh_text">@color/colorWhite</color>
+    <color name="color_load_bg">@color/color_item_bg</color>
+    <color name="color_load_text">@color/colorWhite</color>
+    <color name="item_gray">#F7F7F7</color>
 </resources>

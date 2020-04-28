@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="device"
+            type="com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean.DataBean.Device" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.sate7.wlj.developerreader.sate7gems.view.MarqueeTextView
+            android:id="@+id/manageTag"
+            style="@style/ManageDeviceTv"
+            android:singleLine="true"
+            tools:text="北京测试" />
+
+        <TextView
+            android:id="@+id/manageImei"
+            style="@style/ManageDeviceTv"
+            android:ellipsize="middle"
+            tools:text="158287024424070" />
+
+        <com.sate7.wlj.developerreader.sate7gems.view.MarqueeTextView
+            android:id="@+id/manageNumber"
+            style="@style/ManageDeviceTv"
+            tools:text="18682145730" />
+
+        <com.sate7.wlj.developerreader.sate7gems.view.MarqueeTextView
+            android:id="@+id/manageFrq"
+            style="@style/ManageDeviceTv"
+            android:text="unknown"
+            tools:text="30分钟" />
+
+    </LinearLayout>
+</layout>

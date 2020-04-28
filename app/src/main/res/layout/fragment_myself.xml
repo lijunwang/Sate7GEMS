@@ -28,6 +28,13 @@
         <View style="@style/DivideLine" />
 
         <TextView
+            android:id="@+id/setting_device_manage"
+            style="@style/SettingsTextView"
+            android:text="@string/manage_device" />
+
+        <View style="@style/DivideLine" />
+
+        <TextView
             android:id="@+id/setting_version"
             style="@style/SettingsTextView"
             android:text="@string/version" />

@@ -5,13 +5,14 @@ import android.util.Log;
 import com.blankj.utilcode.util.ToastUtils;
 import com.sate7.wlj.developerreader.sate7gems.R;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean;
+import com.sate7.wlj.developerreader.sate7gems.net.bean.FenceListBean;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.WarningInfoBean;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.Server;
 
 import java.util.ArrayList;
 
 public class OkhttpTest {
-    private Sate7GEMSServer sate7GEMSServer = Sate7GEMSServer.getInstance();
+    private OkHttpServerImp sate7GEMSServer = OkHttpServerImp.getInstance();
     private final boolean debug = true;
     private final String TAG = "OkhttpTest";
 
@@ -19,6 +20,20 @@ public class OkhttpTest {
         if (debug) {
             Log.d(TAG, msg);
         }
+    }
+
+    public void testQueryFence(){
+        sate7GEMSServer.queryAllFence(1, new Server.FenceQueryCallBack() {
+            @Override
+            public void onFenceQuerySuccess(ArrayList<FenceListBean.DataBean.FenceBean> fenceList, boolean hasMore) {
+                log("onFenceQuerySuccess ... " + fenceList.size() + "," + hasMore);
+            }
+
+            @Override
+            public void onFenceQueryFailed(String msg) {
+                log("onFenceQueryFailed ... " + msg);
+            }
+        });
     }
 
     public void testLogin() {

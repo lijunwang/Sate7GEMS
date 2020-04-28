@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:id="@+id/srcollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            tools:context=".CreateFenceActivity">
+
+            <include
+                android:id="@+id/toolBarContainer"
+                layout="@layout/tools_bar" />
+
+            <TextView
+                android:id="@+id/createFence"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical|left"
+                android:text="@string/create_name"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolBarContainer" />
+
+            <EditText
+                android:id="@+id/createFenceET"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/create_fence_name_hint"
+                app:layout_constraintBottom_toBottomOf="@id/createFence"
+                app:layout_constraintLeft_toRightOf="@id/createFence"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolBarContainer" />
+
+            <TextView
+                android:id="@+id/createFenceStartTv"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center_vertical|start"
+                android:paddingLeft="10dp"
+                android:text="@string/start_time"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createFence" />
+
+            <TextView
+                android:id="@+id/createFenceEndTv"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center_vertical|start"
+                android:paddingLeft="10dp"
+                android:text="@string/end_time"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createFenceStartTv" />
+
+            <TextView
+                android:id="@+id/monitorType"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:gravity="center|left"
+                android:paddingLeft="10dp"
+                android:text="@string/monitor_data_type"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createFenceEndTv" />
+
+            <TextView
+                android:id="@+id/monitorCondition"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginLeft="25dp"
+                android:gravity="center"
+                android:text="@string/monitor_data_condition"
+                app:layout_constraintBottom_toBottomOf="@id/monitorType"
+                app:layout_constraintLeft_toRightOf="@id/monitorType"
+                app:layout_constraintTop_toTopOf="@id/monitorType" />
+
+
+            <Spinner
+                android:id="@+id/monitorSpType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:entries="@array/monitorType"
+                android:gravity="center|start"
+                app:layout_constraintLeft_toLeftOf="@id/monitorType"
+                app:layout_constraintTop_toBottomOf="@id/monitorType" />
+
+            <Spinner
+                android:id="@+id/monitorSpCondition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/monitorCondition"
+                app:layout_constraintBottom_toBottomOf="@id/monitorSpType"
+                app:layout_constraintLeft_toLeftOf="@id/monitorCondition"
+                app:layout_constraintTop_toTopOf="@id/monitorSpType" />
+
+            <EditText
+                android:id="@+id/monitorValue"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center|left"
+                android:hint="@string/monitor_data_value"
+                android:inputType="numberDecimal"
+                app:layout_constraintBottom_toBottomOf="@id/monitorSpCondition"
+                app:layout_constraintLeft_toRightOf="@id/monitorSpCondition"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/monitorSpCondition" />
+
+            <TextView
+                android:id="@+id/fenceAddDevice"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical|start"
+                android:paddingLeft="10dp"
+                android:text="@string/add_device"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/monitorSpCondition" />
+
+            <ImageView
+                android:id="@+id/fenceAddDeviceImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@drawable/add"
+                app:layout_constraintBottom_toBottomOf="@id/fenceAddDevice"
+                app:layout_constraintLeft_toRightOf="@id/fenceAddDevice"
+                app:layout_constraintTop_toTopOf="@id/fenceAddDevice" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/fenceCreateFlex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:alignContent="center"
+                app:alignItems="flex_start"
+                app:dividerDrawable="@drawable/divide"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:layout_constraintTop_toBottomOf="@id/fenceAddDeviceImg"
+                app:maxLine="5"
+                app:showDivider="beginning|middle" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>

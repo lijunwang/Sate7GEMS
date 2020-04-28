@@ -79,4 +79,9 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'cn.bingoogolapple:bga-refreshlayout-androidx:2.0.0@aar'
+
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.2'
+    implementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
 }
