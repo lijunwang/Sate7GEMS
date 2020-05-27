@@ -62,7 +62,6 @@ public class RetrofitTest {
             public void onDetailQuerySuccess(DeviceDetailInfoBean device) {
                 EquipmentListBean.DataBean.Device basic = device.getData().getBasic();
                 log("onDetailQuerySuccess ... " + basic.getLastUpdateTime() + "," + basic);
-
                 updateDevice(basic);
             }
 

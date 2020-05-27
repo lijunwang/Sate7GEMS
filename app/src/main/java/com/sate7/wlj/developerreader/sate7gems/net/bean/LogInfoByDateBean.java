@@ -1,6 +1,8 @@
 package com.sate7.wlj.developerreader.sate7gems.net.bean;
 
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class LogInfoByDateBean {
@@ -51,16 +53,18 @@ public class LogInfoByDateBean {
          * report : [{"tag":"v10008","label":"海拔","is_normal":true,"data":[{"date":"2020-03-18 15:28","value":"0.0"},{"date":"2020-03-18 15:28","value":"0.0"},{"date":"2020-03-18 15:27","value":"0.0"},{"date":"2020-03-18 15:27","value":"0.0"}]},{"tag":"v10040","label":"电量","is_normal":true,"data":[{"date":"2020-03-18 15:28","value":"0"},{"date":"2020-03-18 15:28","value":"0"},{"date":"2020-03-18 15:27","value":"0"},{"date":"2020-03-18 15:27","value":"0"}]},{"tag":"v10200","label":"速度","is_normal":true,"data":[{"date":"2020-03-18 15:28","value":"0"},{"date":"2020-03-18 15:28","value":"0"},{"date":"2020-03-18 15:27","value":"0"},{"date":"2020-03-18 15:27","value":"0"}]}]
          * gadget : null
          */
-
-        private String status;
         private EquipmentListBean.DataBean.Device basic;
+        @SerializedName("device_state")
+        private String deviceState;
+        private String gadget;
+        @SerializedName("location_list")
+        private List<DeviceDetailInfoBean.DataBeanX.LocationListBean> locationList;
+        private List<String> messages;
         private Object owner;
         private Object pic1;
-        private Object device_state;
-        private Object gadget;
-        private List<String> messages;
-        private List<List<Double>> location;
         private List<ReportBean> report;
+        private String status;
+
 
         public String getStatus() {
             return status;
@@ -86,8 +90,16 @@ public class LogInfoByDateBean {
             this.pic1 = pic1;
         }
 
-        public Object getDevice_state() {
-            return device_state;
+        public String getDeviceState() {
+            return deviceState;
+        }
+
+        public void setDeviceState(String deviceState) {
+            this.deviceState = deviceState;
+        }
+
+        public void setGadget(String gadget) {
+            this.gadget = gadget;
         }
 
         public EquipmentListBean.DataBean.Device getBasic() {
@@ -98,17 +110,11 @@ public class LogInfoByDateBean {
             this.basic = basic;
         }
 
-        public void setDevice_state(Object device_state) {
-            this.device_state = device_state;
-        }
 
         public Object getGadget() {
             return gadget;
         }
 
-        public void setGadget(Object gadget) {
-            this.gadget = gadget;
-        }
 
         public List<String> getMessages() {
             return messages;
@@ -118,12 +124,12 @@ public class LogInfoByDateBean {
             this.messages = messages;
         }
 
-        public List<List<Double>> getLocation() {
-            return location;
+        public List<DeviceDetailInfoBean.DataBeanX.LocationListBean> getLocationList() {
+            return locationList;
         }
 
-        public void setLocation(List<List<Double>> location) {
-            this.location = location;
+        public void setLocationList(List<DeviceDetailInfoBean.DataBeanX.LocationListBean> locationList) {
+            this.locationList = locationList;
         }
 
         public List<ReportBean> getReport() {

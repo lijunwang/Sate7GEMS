@@ -3,6 +3,9 @@ package com.sate7.wlj.developerreader.sate7gems;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -13,12 +16,18 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.blankj.utilcode.util.Utils;
 import com.gyf.immersionbar.ImmersionBar;
@@ -41,7 +50,11 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.RefreshState;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+
+import static android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener, DrawerLayout.DrawerListener, Observer<EquipmentListViewModel.EquipmentListResult>, OnRefreshLoadMoreListener {
     private final String TAG = "MainActivity";
@@ -54,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FenceFragment fenceFragment;
     private MySelfFragment mySelfFragment;
     private ActionBarDrawerToggle toggle;
+    private MenuItem searchMenu;
+    private SearchView searchView;
+    private boolean mFilterAny;
+    private SearchView.SearchAutoComplete searchAutoComplete;
     private EquipmentAdapter equipmentAdapter;
     private EquipmentListViewModel equipmentListViewModel;
     private boolean hasMore = false;
@@ -133,6 +150,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setTitle(R.string.bottom_location);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search, menu);
+        searchMenu = menu.findItem(R.id.menu_search);
+        searchMenu.setVisible(false);
+        searchView = (SearchView) searchMenu.getActionView();
+        searchAutoComplete = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
+        searchAutoComplete.setThreshold(2);
+        searchView.onActionViewExpanded();
+        searchView.setIconified(true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mFilterAny = equipmentAdapter.findAndFilter(newText);
+//                equipmentListViewModel.searchEquipment(1,newText);
+                return true;
+            }
+        });
+        return true;
+    }
+
     private void updateTitle(int index) {
         switch (index) {
             case 0:
@@ -200,26 +243,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
     }
 
     @Override
     public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-//        XLog.dReport("onDrawerSlide ...");
     }
 
     @Override
     public void onDrawerOpened(@NonNull View drawerView) {
-        XLog.dReport("onDrawerOpened ..." + equipmentAdapter.getSelectedDevices());
+        XLog.dReport("onDrawerOpened search ..." + equipmentAdapter.getSelectedDevices());
+        if(searchMenu!= null){
+            searchMenu.setVisible(true);
+        }
     }
 
     @Override
     public void onDrawerClosed(@NonNull View drawerView) {
-        XLog.dReport("onDrawerClosed ..." + equipmentAdapter.getSelectedDevices());
+        XLog.dReport("onDrawerClosed search 22ww ..." + equipmentAdapter.getSelectedDevices() + "," + mFilterAny);
         if (viewPager.getCurrentItem() == 0) {
             locationFragment.onDeviceSelected(equipmentAdapter.getSelectedDevices());
         } else if (viewPager.getCurrentItem() == 1) {
             warningFragment.onDeviceSelected(equipmentAdapter.getSelectedDevices());
+        }
+        if(searchMenu!= null && searchView != null){
+            searchMenu.setVisible(false);
+            searchView.onActionViewCollapsed();
+            View view = getCurrentFocus();
+            if(view!= null){
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+            }
         }
     }
 
@@ -229,19 +282,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDrawerStateChanged(int newState) {
-        XLog.dReport("onDrawerStateChanged ..." + newState);
     }
 
     //加载设备接口回调
     @Override
     public void onChanged(EquipmentListViewModel.EquipmentListResult equipmentListResult) {
         hasMore = equipmentListResult.isHasMore();
-        XLog.dReport("MainActivity onChanged ... " + equipmentListResult.getDevices().size() + "," + hasMore + "," + binding.drawerLeft.refreshLayout.getState());
+        XLog.dReport("MainActivity onChanged search ... " + equipmentListResult.getDevices().size() + "," + hasMore + "," + binding.drawerLeft.refreshLayout.getState());
         if (binding.drawerLeft.refreshLayout.getState() == RefreshState.Loading) {
             equipmentAdapter.append(equipmentListResult.getDevices());
             binding.drawerLeft.refreshLayout.finishLoadMore();
         } else {//TODO update refresh
             equipmentAdapter.update(equipmentListResult.getDevices());
+            binding.drawerLeft.refreshLayout.finishRefresh(200);
         }
     }
 
@@ -257,7 +310,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         //Go Home do not close;
         boolean back = moveTaskToBack(true);
-        XLog.dReport("moveTaskToBack ..." + back);
     }
 
     //加载更多回调
@@ -277,6 +329,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
         XLog.dReport("onRefresh ... ");
-        binding.drawerLeft.refreshLayout.finishRefresh(500);
+        refresh();
+    }
+
+    private void refresh(){
+        equipmentAdapter.clean();
+        currentPage = 1;
+        equipmentListViewModel.listAllEquipment(currentPage);
+        binding.drawerLeft.footer.setNoMoreData(false);
     }
 }

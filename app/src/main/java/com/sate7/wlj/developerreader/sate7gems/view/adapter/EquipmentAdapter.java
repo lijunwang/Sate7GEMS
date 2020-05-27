@@ -52,6 +52,25 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
         XLog.dReport("selectedDeviceImei ... " + type + "," + selectedDeviceImei);
     }
 
+    public boolean findAndFilter(String input){
+        if(TextUtils.isEmpty(input)){
+            return false;
+        }
+        ArrayList<EquipmentListBean.DataBean.Device> selected = new ArrayList<>();
+        for(EquipmentListBean.DataBean.Device device:devices){
+            if(device.getImei().contains(input) || device.getTag().contains(input)){
+                selected.add(device);
+            }
+        }
+        if(!selected.isEmpty()){
+            devices.clear();
+            devices.addAll(selected);
+            notifyDataSetChanged();
+            return true;
+        }
+        XLog.dReport("findAndFilter ... " + input + "," + selected.size() + "," + selected);
+        return false;
+    }
     public ArrayList<EquipmentListBean.DataBean.Device> getSelectedDevices() {
         ArrayList<EquipmentListBean.DataBean.Device> selectedDevices = new ArrayList<>();
         if (type != null) {
@@ -126,13 +145,43 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
         }
     }
 
+    private final boolean filterUnknown = true;
+    private boolean isUnknown(EquipmentListBean.DataBean.Device device){
+        if(device.getImei().startsWith("123456789") || device.getImei().startsWith("86793503000")){
+            return true;
+        }
+
+        return false;
+    }
     public void update(ArrayList<EquipmentListBean.DataBean.Device> devices) {
-        this.devices = devices;
+        if(filterUnknown){
+            this.devices.clear();
+            for(EquipmentListBean.DataBean.Device device:devices){
+                if(!isUnknown(device)){
+                    this.devices.add(device);
+                }
+            }
+        }else{
+            this.devices = devices;
+        }
         notifyDataSetChanged();
     }
 
     public void append(ArrayList<EquipmentListBean.DataBean.Device> devices) {
-        this.devices.addAll(devices);
+        if(filterUnknown){
+            for(EquipmentListBean.DataBean.Device device:devices){
+                if(!isUnknown(device)){
+                    this.devices.add(device);
+                }
+            }
+        }else{
+            this.devices.addAll(devices);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void clean(){
+        this.devices.clear();
         notifyDataSetChanged();
     }
 
@@ -240,7 +289,6 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
                 equipmentHolder.tag.setText(device.getTag());
                 equipmentHolder.tag.setVisibility(View.VISIBLE);
             }
-//            equipmentHolder.number.setText("");
         }
 
         //LiuQiong design

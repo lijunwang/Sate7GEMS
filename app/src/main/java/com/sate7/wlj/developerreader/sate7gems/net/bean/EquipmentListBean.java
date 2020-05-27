@@ -6,9 +6,11 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.baidu.mapapi.model.LatLng;
 import com.google.gson.annotations.SerializedName;
+import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 
 import org.w3c.dom.Text;
 
@@ -136,7 +138,9 @@ public class EquipmentListBean {
             public void setLocation(LatLng location) {
                 this.location = location;
             }
-
+            public Device(String imei){
+                this.imei = imei;
+            }
             protected Device(Parcel in) {
                 imei = in.readString();
                 buildNumber = in.readString();
@@ -235,7 +239,7 @@ public class EquipmentListBean {
             @NonNull
             @Override
             public String toString() {
-                return "imei == " + imei + ",type ==" + type + ",tag == " + tag + ",isChecked == " + isChecked;
+                return "(imei == " + imei + ",type ==" + type + ",tag == " + tag + ",lastUpdateTime==" + lastUpdateTime  + ",isChecked == " + isChecked + ")";
             }
 
             public String getLastUpdateTime() {
@@ -278,7 +282,22 @@ public class EquipmentListBean {
                 this.bindNumber = bindNumber;
             }
 
+            @Override
+            public boolean equals(@Nullable Object obj) {
+                if(!(obj instanceof Device)){
+                    return false;
+                }else{
+                    Device device = (Device) obj;
+                    XLog.dReport("Device equals ... " + device.getImei() + "," + this.imei);
+                    return device.getImei().equals(imei);
+                }
+            }
 
+            @Override
+            public int hashCode() {
+                XLog.dReport("Device hashCode ... " + this.imei);
+                return imei.hashCode();
+            }
         }
     }
 }

@@ -16,4 +16,11 @@ public interface Constants {
     String SERVER_ORG_CODE = "org_code";
     int MONITOR_GEOFENCE = 0;
     int MONITOR_DATA = 1;
+
+    String FilterDeviceQueryKey = "paramFiled";
+    String FilterDeviceKey_DeviceType = "deviceType";
+    String FilterDeviceKey_IMEI = "imei";
+    String FilterDeviceKey_TAG = "tag";
+    String FilterDeviceKey_QX_TAG = "qxTag";
+    String FilterDeviceValue = "paramValue";
 }

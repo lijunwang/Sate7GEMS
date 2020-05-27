@@ -1,5 +1,6 @@
 package com.sate7.wlj.developerreader.sate7gems.net.retrofit;
 
+import android.content.ContentValues;
 import android.util.Log;
 
 import com.baidu.mapapi.model.LatLng;
@@ -96,11 +97,52 @@ public class RetrofitServerImp implements Server {
         }
     }
 
-    @Override
-    public void queryAllDevices(int pageNumber, DevicesQueryCallBack callBack) {
+    public void filterDevices(int pageNumber,ContentValues values,DevicesQueryCallBack callBack){
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("page_no", pageNumber);
         jsonObject.addProperty("page_size", Server.PageSize);
+        jsonObject.addProperty(Constants.FilterDeviceQueryKey, values.getAsString(Constants.FilterDeviceQueryKey));
+        jsonObject.addProperty(Constants.FilterDeviceValue, values.getAsString(Constants.FilterDeviceValue));
+        jsonObject.addProperty("orderby", "lastUpdateTime");
+        jsonObject.addProperty("desc", "-1");
+        String body = jsonObject.toString();
+        log("filterDevices ww ... " + body + "," + Sate7EGMSApplication.getToken());
+        Call<EquipmentListBean> call = mGEMSServer.queryAllEquipments(Sate7EGMSApplication.getToken(), /*"application/json",*/ body);
+        call.enqueue(new Callback<EquipmentListBean>() {
+            @Override
+            public void onResponse(Call<EquipmentListBean> call, Response<EquipmentListBean> response) {
+                if (response.code() != 200) {
+                    log("queryAllDevices error ... ");
+                    return;
+                }
+                EquipmentListBean equipmentListBean = response.body();
+                log("filterDevices onResponse " + equipmentListBean.getCode() + "," + equipmentListBean.getMsg());
+                checkIfNeedRefresh(equipmentListBean.getCode(), equipmentListBean.getMsg());
+                if (callBack != null && equipmentListBean.getCode() == 0) {
+                    ArrayList<EquipmentListBean.DataBean.Device> devices = (ArrayList<EquipmentListBean.DataBean.Device>) equipmentListBean.getData().getDevices();
+                    boolean hasMore = pageNumber < equipmentListBean.getData().getPageCount();
+                    callBack.onDeviceQuerySuccess(devices == null ? new ArrayList<>() : devices, hasMore);
+                    log("filterDevices return data " + hasMore + "," + (devices == null ? " null " : devices.size()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EquipmentListBean> call, Throwable t) {
+                log("queryAllDevices onFailure ... " + t.getMessage());
+                if (callBack != null) {
+                    callBack.onDeviceQueryFailed(t.getMessage());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void queryAllDevices(int pageNumber,DevicesQueryCallBack callBack) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("page_no", pageNumber);
+        jsonObject.addProperty("page_size", Server.PageSize);
+        jsonObject.addProperty("orderby", "lastUpdateTime");
+        jsonObject.addProperty("desc", "-1");
         String body = jsonObject.toString();
         log("queryAllDevices ... " + body + "," + Sate7EGMSApplication.getToken());
         Call<EquipmentListBean> call = mGEMSServer.queryAllEquipments(Sate7EGMSApplication.getToken(), /*"application/json",*/ body);
@@ -112,7 +154,6 @@ public class RetrofitServerImp implements Server {
                     return;
                 }
                 EquipmentListBean equipmentListBean = response.body();
-//                ArrayList<EquipmentListBean.DataBean.Device> devices = (ArrayList<EquipmentListBean.DataBean.Device>) equipmentListBean.getData().getDevices();
                 log("queryAllDevices onResponse " + equipmentListBean.getCode() + "," + equipmentListBean.getMsg());
                 checkIfNeedRefresh(equipmentListBean.getCode(), equipmentListBean.getMsg());
                 if (callBack != null && equipmentListBean.getCode() == 0) {
@@ -363,7 +404,7 @@ public class RetrofitServerImp implements Server {
         jsonObject.addProperty("page_no", pageNumber);
         jsonObject.addProperty("page_size", Server.PageSizeForFence);
         String body = jsonObject.toString();
-        Call<FenceListBean> call = mGEMSServer.queryAllFences(Sate7EGMSApplication.getToken(), body, Sate7EGMSApplication.getOrgCode());
+        Call<FenceListBean> call = mGEMSServer.queryAllFences(Sate7EGMSApplication.getToken(), body);
         call.enqueue(new Callback<FenceListBean>() {
             @Override
             public void onResponse(Call<FenceListBean> call, Response<FenceListBean> response) {
@@ -573,5 +614,34 @@ public class RetrofitServerImp implements Server {
         if (code == 1004 && msg.contains("token")) {
             login(getSavedName(), getSavedPwd(), null);
         }
+    }
+
+    public void getHomeArticle(){
+        RetrofitGEMSServer retrofitServer = new Retrofit.Builder().baseUrl("https://www.wanandroid.com/").
+                addConverterFactory(ScalarsConverterFactory.create()).
+                addConverterFactory(GsonConverterFactory.create()).
+                client(UnsafeOkHttpClient.getUnsafeOkHttpClient()).
+                build().create(RetrofitGEMSServer.class);
+
+        Call<ResponseBody> call = retrofitServer.getHomeArticle(0);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String msg = response.body().string();
+                    log("get home article onResponse ..." + msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    log("get home article onResponse IO Exception  ..." + e.getMessage());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                log("get home article onFailure ...");
+            }
+        });
+
     }
 }

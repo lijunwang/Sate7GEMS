@@ -1,5 +1,6 @@
 package com.sate7.wlj.developerreader.sate7gems.view.fragment;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,6 +39,7 @@ import com.sate7.wlj.developerreader.sate7gems.databinding.FragmentLocationBindi
 import com.sate7.wlj.developerreader.sate7gems.databinding.MarkerInfoBinding;
 import com.sate7.wlj.developerreader.sate7gems.location.MarkerAction;
 import com.sate7.wlj.developerreader.sate7gems.map.PolylineData;
+import com.sate7.wlj.developerreader.sate7gems.net.bean.DeviceDetailInfoBean;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.LogInfoByDateBean;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.RetrofitServerImp;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.Server;
@@ -63,13 +65,6 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
         super.onCreate(savedInstanceState);
         detailViewMode = ViewModelProviders.of(this).get(DetailViewMode.class);
         markerAction = new MarkerAction(getContext());
-//        checkAndShowSelectedDevice();
-
-        startQueryAndShow();
-    }
-
-    public boolean onTouchEvent(MotionEvent event) {
-        return binding.mapView.onTouchEvent(event);
     }
 
     @Nullable
@@ -89,7 +84,7 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
         detailViewMode.getLatestLocation().observe(this, new Observer<EquipmentListBean.DataBean.Device>() {
             @Override
             public void onChanged(EquipmentListBean.DataBean.Device device) {
-                XLog.dReport("Location show ... " + device + "," + device);
+                XLog.dReport("Location show ... " + device);
                 if (device.getLocation() != null) {
                     mLatestLocation = device.getLocation();
                     BaiduMapHelper.getInstance().addMarkerPoint(binding.mapView, device.getLocation(), device);
@@ -311,19 +306,19 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
                     RetrofitServerImp.getInstance().queryLocationByDate(1, currentDevice.getImei(), start, end, new Server.LocationsListQueryCallBack() {
                         @Override
                         public void onLocationsListQuerySuccess(LogInfoByDateBean logInfoByDateBean) {
-                            List<List<Double>> locations = logInfoByDateBean.getData().getLocation();
-                            List<String> message = logInfoByDateBean.getData().getMessages();
-                            XLog.dReport("onLocationsListQuerySuccess locations ... " + message);
-                            if (locations == null && locations.isEmpty()) {
+                            List<DeviceDetailInfoBean.DataBeanX.LocationListBean> locationBeanLists = logInfoByDateBean.getData().getLocationList();
+//                            List<String> message = logInfoByDateBean.getData().getMessages();
+                            XLog.dReport("onLocationsListQuerySuccess ... " + (locationBeanLists == null ? " null " : locationBeanLists.size()));
+                            if (locationBeanLists == null || locationBeanLists.isEmpty()) {
                                 ToastUtils.showLong(R.string.track_empty);
                                 binding.mapView.getMap().clear();
                                 BaiduMapHelper.getInstance().addMarkerPoint(binding.mapView, mLatestLocation, currentDevice);
                                 return;
                             }
-                            XLog.dReport("onLocationsListQuerySuccess ... " + locations.size());
+                            XLog.dReport("onLocationsListQuerySuccess ... " + locationBeanLists.size());
                             ArrayList<LatLng> points = new ArrayList<>();
-                            for (List<Double> l : locations) {
-                                points.add(new LatLng(l.get(1), l.get(0)));
+                            for (DeviceDetailInfoBean.DataBeanX.LocationListBean l : locationBeanLists) {
+                                points.add(new LatLng(l.getLocation().get(1), l.getLocation().get(0)));
                             }
                             PolylineData polylineData = BaiduMapHelper.getInstance().drawLines(binding.mapView, points);
                             mPlyLineList.add(polylineData);

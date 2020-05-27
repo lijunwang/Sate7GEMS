@@ -21,10 +21,10 @@ public class DetailViewMode extends GEMSViewModel {
             @Override
             public void onDetailQuerySuccess(DeviceDetailInfoBean device) {
                 EquipmentListBean.DataBean.Device basic = device.getData().getBasic();
-                List<List<Double>> locationList = device.getData().getLocation();
+                List<DeviceDetailInfoBean.DataBeanX.LocationListBean> locationList = device.getData().getLocationList();
                 if (locationList != null && locationList.size() > 0) {
-                    //是拿第一个还是拿最后一个要问姜振；TODO
-                    List<Double> data = locationList.get(locationList.size() - 1);
+                    List<Double> data = locationList.get(0).getLocation();
+                    log("getLatestLocationInfo data:" + locationList.get(0).getUpdateTime());
                     LatLng location = new LatLng(data.get(1), data.get(0));
                     basic.setLocation(location);
                     locationData.postValue(basic);

@@ -15,7 +15,8 @@ public interface NetBase {
     String GET_HOME_PAGE_WARNING_INFO = BASE_URL + "/api/v1/message/query/warning";
     String UPDATE_NUMBER_INFO = BASE_URL + "/api/v1/device/tag/update";
 //    String FENCE_LIST = BASE_URL + "/api/v1/task/query/list/";//{org_code}
-    String FENCE_LIST = BASE_URL + "/api/v1/task/list/";//{org_code}
+//    String FENCE_LIST = BASE_URL + "/api/v1/task/list/";//{org_code}
+    String FENCE_LIST = BASE_URL + "/api/v1/task/list";
     String CREATE_FENCE = BASE_URL + "/api/v1/task/create";//{org_code}
     String GET_DATA_INFO_BY_DATE = BASE_URL + "/api/v1/device/query/logs/date/";
 }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public interface Server {
     //每页加载的数量
-    int PageSize = 30;
+    int PageSize = 100;
     //围栏比较特殊
     int PageSizeForFence = 100;
 

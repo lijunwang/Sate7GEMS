@@ -3,6 +3,7 @@ package com.sate7.wlj.developerreader.sate7gems.view.xpop;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,8 @@ import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class StartEndDateDialog implements CompoundButton.OnCheckedChangeListener {
+public class StartEndDateDialog implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+
     public interface StartEndTimeSelectedListener {
         void onDateSelected(String start, String end);
     }
@@ -62,16 +64,16 @@ public class StartEndDateDialog implements CompoundButton.OnCheckedChangeListene
         calendarStart.add(Calendar.MONTH, -1);
         calendarEnd = Calendar.getInstance();
         alertDialog = new AlertDialog.Builder(context).
-                setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).
-                setPositiveButton(R.string.ok, null).
-                setView(binding.getRoot()).
-                create();
-
+//                setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                }).
+//                setPositiveButton(R.string.ok, null).
+        setView(binding.getRoot()).
+                        create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         binding.trackStart.setText(context.getResources().getString(R.string.track_start_value, simpleDateFormat.format(calendarStart.getTime())));
         binding.trackEnd.setText(context.getResources().getString(R.string.track_end_value, simpleDateFormat.format(calendarEnd.getTime())));
         binding.trackTimePick.init(calendarStart.get(Calendar.YEAR), calendarStart.get(Calendar.MONTH), calendarStart.get(Calendar.DAY_OF_MONTH), dateChangedListenerStart);
@@ -84,25 +86,43 @@ public class StartEndDateDialog implements CompoundButton.OnCheckedChangeListene
         return false;
     }
 
-    public void show() {
-        if (!alertDialog.isShowing()) {
-            alertDialog.show();
-        }
-
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ok:
                 if (checkOk()) {
                     listener.onDateSelected(simpleDateFormat.format(calendarStart.getTime()), simpleDateFormat.format(calendarEnd.getTime()));
                     alertDialog.dismiss();
                 } else {
                     ToastUtils.showShort(R.string.track_date_error);
                 }
-                return;
-            }
-        });
+                break;
+            case R.id.cancel:
+                alertDialog.dismiss();
+                break;
+        }
+    }
 
-
+    public void show() {
+        if (!alertDialog.isShowing()) {
+            alertDialog.show();
+        }
+        binding.ok.setOnClickListener(this);
+        binding.cancel.setOnClickListener(this);
+//        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (checkOk()) {
+//                    listener.onDateSelected(simpleDateFormat.format(calendarStart.getTime()), simpleDateFormat.format(calendarEnd.getTime()));
+//                    alertDialog.dismiss();
+//                } else {
+//                    ToastUtils.showShort(R.string.track_date_error);
+//                }
+//                return;
+//            }
+//        });
+//        ViewGroup viewGroup = (ViewGroup) alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).getParent();
+//        viewGroup.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
 //        debugLayout(binding.getRoot());
 //        changeHeaderColor();
     }

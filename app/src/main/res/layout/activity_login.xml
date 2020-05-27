@@ -68,6 +68,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="@dimen/login_margin_left_add"
             android:layout_marginRight="@dimen/login_margin_right"
+            android:inputType="textPassword"
             android:hint="@string/pwd_hint"
             android:text="@={loginViewMode.password,default=`qx`}"
             app:layout_constraintBottom_toTopOf="@id/login_remember"

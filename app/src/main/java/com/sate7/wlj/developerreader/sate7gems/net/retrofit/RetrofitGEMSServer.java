@@ -24,7 +24,8 @@ public interface RetrofitGEMSServer {
     String PATH_EQUIPMENTS = "api/v1/device/query/list";
     String PATH_WARNINGS = "api/v1/message/query/imei/warning/{imei}";
     String PATH_HOME_PAGE_WARNINGS = "api/v1/message/query/warning";
-    String PATH_FENCES = "api/v1/task/list/{org_code}";
+//    String PATH_FENCES = "api/v1/task/list/{org_code}";
+    String PATH_FENCES = "api/v1/task/list";
     String PATH_DETAIL = "api/v1/device/query/imei/{imei}";
     String PATH_QUERY_BY_DATE = "api/v1/device/query/logs/date/{imei}";
     String PATH_UPDATE_DEVICE = "api/v1/device/tag/update";
@@ -55,7 +56,7 @@ public interface RetrofitGEMSServer {
     //登陆得到org_code,再用org_code去查询所有的围栏信息;
     @Headers("Content-Type:application/json")
     @POST(PATH_FENCES)
-    Call<FenceListBean> queryAllFences(@Header("Authorization") String token, @Body String body, @Path("org_code") String orgCode);
+    Call<FenceListBean> queryAllFences(@Header("Authorization") String token, @Body String body);
 
     //获取设备详细消息,包括最新的位置信息
     @Headers("Content-Type:application/json")
@@ -87,4 +88,10 @@ public interface RetrofitGEMSServer {
     @POST(PATH_CREATE_FENCE)
 //    Call<ResponseBody> createStateMonitor(@Header("Authorization") String token,@Body String body);
     Call<SimplestResponseBean> createStateMonitor(@Header("Authorization") String token,@Body String body);
+
+
+    //Test
+    @GET("article/list/{id}/json")
+    Call<ResponseBody> getHomeArticle(@Path("id") int id);
+
 }

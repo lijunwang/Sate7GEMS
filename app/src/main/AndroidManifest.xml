@@ -11,9 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:name=".Sate7EGMSApplication"
         android:allowBackup="true"
@@ -23,10 +22,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".test.CopyMapService"
+            android:exported="false"></service>
+
         <activity
             android:name=".DeviceManagerActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoTitle"></activity>
+            android:theme="@style/AppTheme.NoTitle" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -35,10 +38,10 @@
         <activity
             android:name=".CreateFenceActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoTitle"></activity>
+            android:theme="@style/AppTheme.NoTitle" />
         <activity
-            android:name=".TestActivity"
-            android:exported="true"></activity>
+            android:name=".test.TestActivity"
+            android:exported="true" />
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"

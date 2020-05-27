@@ -274,12 +274,14 @@ public class OkHttpServerImp implements Server, NetBase {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("page_no", pageNub);
         jsonObject.addProperty("page_size", PageSizeForFence);
+        jsonObject.addProperty("page_size", PageSizeForFence);
+        jsonObject.addProperty("page_size", PageSizeForFence);
         String content = jsonObject.toString();
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), content);
         Request request = new Request.Builder().
                 addHeader("Authorization", Sate7EGMSApplication.getToken()).
                 addHeader("content-type", "application/json").
-                url(FENCE_LIST + Sate7EGMSApplication.getOrgCode()).post(body).build();
+                url(FENCE_LIST/*+ Sate7EGMSApplication.getOrgCode()*/).post(body).build();
         log("queryAllFence ... " + content);
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
