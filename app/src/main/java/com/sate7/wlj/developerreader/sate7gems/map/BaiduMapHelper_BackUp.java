@@ -1,10 +1,6 @@
 package com.sate7.wlj.developerreader.sate7gems.map;
 
-import android.icu.util.BuddhistCalendar;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -22,26 +18,20 @@ import com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.UpdateItemBean;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
 
-public class BaiduMapHelper {
+public class BaiduMapHelper_BackUp {
     private static class BaiduMapHelperHolder {
-        private static BaiduMapHelper mInstance = new BaiduMapHelper();
+        private static BaiduMapHelper_BackUp mInstance = new BaiduMapHelper_BackUp();
     }
 
     private ArrayList<LatLng> pointList = new ArrayList<>();
 
-    public static BaiduMapHelper getInstance() {
+    public static BaiduMapHelper_BackUp getInstance() {
         return BaiduMapHelperHolder.mInstance;
     }
 
-    private BaiduMapHelper() {
+    private BaiduMapHelper_BackUp() {
     }
 
     public void cleanAll(MapView mapView) {
@@ -111,12 +101,12 @@ public class BaiduMapHelper {
             OverlayOptions textOptions = new TextOptions()
                     .text(point.getUpdateTime()) //文字内容
                     .bgColor(0x000000) //背景色
-//                    .visible(true)
+                    .visible(true)
                     .fontSize(24) //字号
                     .fontColor(0xFF000000) //文字颜色
                     .position(point.getLocation());
 //            if visible(false)
-//            pointsOverlay.add(mapView.getMap().addOverlay(textOptions));
+            pointsOverlay.add(mapView.getMap().addOverlay(textOptions));
         }
 //设置折线的属性
         ArrayList<LatLng> latLngPoint = new ArrayList<>();
@@ -156,8 +146,13 @@ public class BaiduMapHelper {
         }else if(from.getLocation().latitude > to.getLocation().latitude && from.getLocation().longitude < to.getLocation().longitude){
             angel = -angel;
         }
+
+
+
+
+
         //if debug
-        /*ArrayList<LatLng> debug = new ArrayList<>();
+        ArrayList<LatLng> debug = new ArrayList<>();
         debug.add(from.getLocation());
         debug.add(latLng);
         debug.add(to.getLocation());
@@ -166,9 +161,37 @@ public class BaiduMapHelper {
                 .width(5)
                 .color(0xAAFF0000)
                 .points(debug);
-        mapView.getMap().addOverlay(polylineOptions);*/
+        mapView.getMap().addOverlay(polylineOptions);
 
         XLog.dReport("angel ww == " + from + " || " + to + "," + angel);
+        return angel;
+    }
+
+    //三角形测试
+    private float angel(MapView mapView,LatLng from, LatLng to){
+        //斜边长度
+//        double bevel = DistanceUtil.getDistance(from, to);
+        //直角边1（虚构），经度距离，横向
+//        LatLng latLng = new LatLng(to.latitude,from.longitude);
+        LatLng latLng = new LatLng(from.latitude,to.longitude);
+        double leg1 = DistanceUtil.getDistance(latLng,from);
+        //直角边2（虚构），纬度距离，纵向
+        double leg2 = DistanceUtil.getDistance(latLng,to);
+        //计算角度tan
+//        float angel = (float) Math.atan2(leg2,leg1);
+        float angel = (float) (Math.atan2(leg2,leg1) * 180 / Math.PI);
+//        float angel = (float) (Math.atan2(leg1,leg2) * 180 / Math.PI);
+        XLog.dReport("angel == " + angel);
+        ArrayList<LatLng> debug = new ArrayList<>();
+        debug.add(from);
+        debug.add(latLng);
+        debug.add(to);
+        debug.add(from);
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .width(5)
+                .color(0xAAFF0000)
+                .points(debug);
+        mapView.getMap().addOverlay(polylineOptions);
         return angel;
     }
 }

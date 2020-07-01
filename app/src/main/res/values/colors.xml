@@ -21,4 +21,5 @@
     <color name="color_load_bg">@color/color_item_bg</color>
     <color name="color_load_text">@color/colorWhite</color>
     <color name="item_gray">#F7F7F7</color>
+    <color name="white">#000</color>
 </resources>

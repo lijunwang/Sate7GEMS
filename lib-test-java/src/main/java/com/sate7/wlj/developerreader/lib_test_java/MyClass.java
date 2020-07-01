@@ -24,21 +24,10 @@ public class MyClass {
     };
 
     public static void main(String[] args) throws InterruptedException {
-        System.out.println("nani");
-        new MyClass().r1.run();
-        new MyClass().r2.run();
-        new MyClass().r3.run();
-
-
-        MyClass myClass = new MyClass();
-        myClass.thread.start();
-
-        Thread.sleep(2000);
-        synchronized (myClass.thread) {
-            System.out.println("to notify ..." + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS zzz").format(System.currentTimeMillis()));
-            myClass.thread.notify();
-        }
-
+        double tan = Math.tan(Math.PI * 45 / 180); // 求角度的tan
+        double aa = Math.atan2(1,1) * 180 / Math.PI;// 根据tan求角度
+        System.out.println(tan);
+        System.out.println(aa);
     }
 
     private Thread thread = new Thread() {

@@ -2,6 +2,10 @@ package com.sate7.wlj.developerreader.sate7gems.util;
 
 import android.util.Log;
 
+import com.sate7.wlj.developerreader.sate7gems.net.bean.EquipmentListBean;
+
+import java.util.Comparator;
+
 public class XLog {
     public static String TAG = "Sate7GEMS";
     public static String TAG_REFRESH = "Refresh";

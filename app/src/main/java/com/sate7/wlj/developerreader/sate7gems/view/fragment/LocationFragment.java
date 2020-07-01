@@ -20,6 +20,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
@@ -41,6 +43,7 @@ import com.sate7.wlj.developerreader.sate7gems.location.MarkerAction;
 import com.sate7.wlj.developerreader.sate7gems.map.PolylineData;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.DeviceDetailInfoBean;
 import com.sate7.wlj.developerreader.sate7gems.net.bean.LogInfoByDateBean;
+import com.sate7.wlj.developerreader.sate7gems.net.bean.UpdateItemBean;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.RetrofitServerImp;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.Server;
 import com.sate7.wlj.developerreader.sate7gems.util.Constants;
@@ -191,13 +194,21 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        XLog.dReport("onMarkerClick ... " + "," + marker.getAnchorX() + "," + marker.getAnchorY());
+        XLog.dReport("onMarkerClick ww... " + "," + marker.getAnchorX() + "," + marker.getAnchorY());
         if (marker.getExtraInfo() != null) {
             EquipmentListBean.DataBean.Device device = marker.getExtraInfo().getParcelable("device");
-            currentDevice = device;
-            XLog.dReport("onMarkerClick device ... " + device + "," + device.getLocation());
-            goTo(device);
-            return true;
+            if(device != null){
+                currentDevice = device;
+                XLog.dReport("onMarkerClick device ... " + device + "," + device.getLocation());
+                goTo(device);
+                return true;
+            }
+
+            Bundle bundle = marker.getExtraInfo();
+            XLog.dReport("onMarkerClick update time ... " + bundle + "," + bundle.getString("time"));
+            if(bundle != null && !TextUtils.isEmpty(bundle.getString("time"))){
+                ToastUtils.showShort(bundle.getString("time"));
+            }
         }
         return false;
     }
@@ -316,11 +327,23 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
                                 return;
                             }
                             XLog.dReport("onLocationsListQuerySuccess ... " + locationBeanLists.size());
-                            ArrayList<LatLng> points = new ArrayList<>();
+                            /*ArrayList<LatLng> points = new ArrayList<>();
                             for (DeviceDetailInfoBean.DataBeanX.LocationListBean l : locationBeanLists) {
                                 points.add(new LatLng(l.getLocation().get(1), l.getLocation().get(0)));
+
+                            }
+                            PolylineData polylineData = BaiduMapHelper.getInstance().drawLines(binding.mapView, points);*/
+
+                            ArrayList<UpdateItemBean> points = new ArrayList<>();
+                            for (DeviceDetailInfoBean.DataBeanX.LocationListBean l : locationBeanLists) {
+                                //去重
+                                UpdateItemBean bean = new UpdateItemBean(new LatLng(l.getLocation().get(1), l.getLocation().get(0)),l.getUpdateTime());
+                                if(!points.contains(bean)){
+                                    points.add(bean);
+                                }
                             }
                             PolylineData polylineData = BaiduMapHelper.getInstance().drawLines(binding.mapView, points);
+                            XLog.dReport("drawLines data ww ... "  +  locationBeanLists.size() + "," +  points.size());
                             mPlyLineList.add(polylineData);
                             if (infoWindow != null) {
                                 infoWindow.dissmiss();
@@ -363,5 +386,4 @@ public class LocationFragment extends BaseFragment implements View.OnClickListen
             detailViewMode.queryLatestLocationInfo(device.getImei());
         }
     }
-
 }

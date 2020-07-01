@@ -60,10 +60,6 @@ public class HttpUtils {
     }
 
 
-
-
-
-
     public OkHttpClient getUnsafeOkHttpClient(Context context) {
         try {
             // Install the all-trusting trust manager TLS

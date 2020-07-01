@@ -38,6 +38,7 @@ import com.sate7.wlj.developerreader.sate7gems.net.retrofit.RetrofitServerImp;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.RetrofitTest;
 import com.sate7.wlj.developerreader.sate7gems.net.retrofit.Server;
 import com.sate7.wlj.developerreader.sate7gems.util.XLog;
+import com.sate7.wlj.developerreader.sate7gems.view.MyViewPager;
 import com.sate7.wlj.developerreader.sate7gems.view.adapter.EquipmentAdapter;
 import com.sate7.wlj.developerreader.sate7gems.view.fragment.FenceFragment;
 import com.sate7.wlj.developerreader.sate7gems.view.fragment.LocationFragment;
@@ -59,7 +60,7 @@ import static android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener, DrawerLayout.DrawerListener, Observer<EquipmentListViewModel.EquipmentListResult>, OnRefreshLoadMoreListener {
     private final String TAG = "MainActivity";
     private ActivityMainBinding binding;
-    private ViewPager viewPager;
+    private MyViewPager viewPager;
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private ArrayList<TabView> tabViews = new ArrayList<>();
     private LocationFragment locationFragment;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ActionBarDrawerToggle toggle;
     private MenuItem searchMenu;
     private SearchView searchView;
-    private boolean mFilterAny;
+    private ArrayList<EquipmentListBean.DataBean.Device> savedDevice = new ArrayList<>();
     private SearchView.SearchAutoComplete searchAutoComplete;
     private EquipmentAdapter equipmentAdapter;
     private EquipmentListViewModel equipmentListViewModel;
@@ -168,8 +169,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mFilterAny = equipmentAdapter.findAndFilter(newText);
-//                equipmentListViewModel.searchEquipment(1,newText);
+                if(savedDevice.isEmpty()){
+                    savedDevice = equipmentAdapter.getDevices();
+                }
+                savedDevice = equipmentAdapter.findAndFilter(newText,savedDevice);
                 return true;
             }
         });
@@ -181,18 +184,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case 0:
                 binding.toolBar.setTitle(R.string.bottom_location);
                 toggle.setDrawerIndicatorEnabled(true);
+                viewPager.setScrollEnabled(false);
                 break;
             case 1:
                 binding.toolBar.setTitle(R.string.bottom_warning);
                 toggle.setDrawerIndicatorEnabled(true);
+                viewPager.setScrollEnabled(true);
                 break;
             case 2:
                 binding.toolBar.setTitle(R.string.bottom_fence);
                 toggle.setDrawerIndicatorEnabled(false);
+                viewPager.setScrollEnabled(true);
                 break;
             case 3:
                 binding.toolBar.setTitle(R.string.bottom_my);
                 toggle.setDrawerIndicatorEnabled(false);
+                viewPager.setScrollEnabled(true);
                 break;
         }
     }
@@ -259,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDrawerClosed(@NonNull View drawerView) {
-        XLog.dReport("onDrawerClosed search 22ww ..." + equipmentAdapter.getSelectedDevices() + "," + mFilterAny);
+        XLog.dReport("onDrawerClosed search 22ww ..." + equipmentAdapter.getSelectedDevices());
         if (viewPager.getCurrentItem() == 0) {
             locationFragment.onDeviceSelected(equipmentAdapter.getSelectedDevices());
         } else if (viewPager.getCurrentItem() == 1) {
@@ -333,9 +340,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void refresh(){
-        equipmentAdapter.clean();
+//        equipmentAdapter.clean();
         currentPage = 1;
-        equipmentListViewModel.listAllEquipment(currentPage);
+        equipmentListViewModel.listAllEquipment(1);
         binding.drawerLeft.footer.setNoMoreData(false);
     }
 }

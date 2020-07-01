@@ -25,6 +25,9 @@ import com.sate7.wlj.developerreader.sate7gems.util.XLog;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -40,6 +43,12 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
     private HashSet<String> selectedDeviceImei = new HashSet<>();
     private Context context;
     private boolean allChecked = false;
+    private Comparator<EquipmentListBean.DataBean.Device> comparator = new Comparator<EquipmentListBean.DataBean.Device>() {
+        @Override
+        public int compare(EquipmentListBean.DataBean.Device o1, EquipmentListBean.DataBean.Device o2) {
+            return o2.getLastUpdateTime().compareTo(o1.getLastUpdateTime());
+        }
+    };
 
     public EquipmentAdapter(Context context) {
         this.context = context;
@@ -52,12 +61,15 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
         XLog.dReport("selectedDeviceImei ... " + type + "," + selectedDeviceImei);
     }
 
-    public boolean findAndFilter(String input){
+    public ArrayList<EquipmentListBean.DataBean.Device> findAndFilter(String input, ArrayList<EquipmentListBean.DataBean.Device> from){
+        XLog.dReport("findAndFilter gogoww ... " + input + "," + from.size() + "," + devices.size());
+        ArrayList<EquipmentListBean.DataBean.Device> copy = new ArrayList<>();
+        copy.addAll(devices);
         if(TextUtils.isEmpty(input)){
-            return false;
+            return copy;
         }
         ArrayList<EquipmentListBean.DataBean.Device> selected = new ArrayList<>();
-        for(EquipmentListBean.DataBean.Device device:devices){
+        for(EquipmentListBean.DataBean.Device device:from){
             if(device.getImei().contains(input) || device.getTag().contains(input)){
                 selected.add(device);
             }
@@ -66,10 +78,12 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
             devices.clear();
             devices.addAll(selected);
             notifyDataSetChanged();
-            return true;
+            return copy;
+        }else{
+            append(from);
         }
         XLog.dReport("findAndFilter ... " + input + "," + selected.size() + "," + selected);
-        return false;
+        return copy;
     }
     public ArrayList<EquipmentListBean.DataBean.Device> getSelectedDevices() {
         ArrayList<EquipmentListBean.DataBean.Device> selectedDevices = new ArrayList<>();
@@ -145,7 +159,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
         }
     }
 
-    private final boolean filterUnknown = true;
+    private final boolean filterUnknown = false;
     private boolean isUnknown(EquipmentListBean.DataBean.Device device){
         if(device.getImei().startsWith("123456789") || device.getImei().startsWith("86793503000")){
             return true;
@@ -154,29 +168,43 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
         return false;
     }
     public void update(ArrayList<EquipmentListBean.DataBean.Device> devices) {
+//        XLog.dReport("update old ..." + this.devices);
+//        XLog.dReport("update new ..." + devices);
+        HashSet<EquipmentListBean.DataBean.Device> set = new HashSet<>(this.devices);//去重复
         if(filterUnknown){
             this.devices.clear();
             for(EquipmentListBean.DataBean.Device device:devices){
                 if(!isUnknown(device)){
-                    this.devices.add(device);
+//                    this.devices.add(device);
+                    set.add(device);
                 }
             }
         }else{
-            this.devices = devices;
+//            this.devices = devices;
+            set.addAll(devices);
         }
+        this.devices.clear();
+        this.devices.addAll(set);
+        Collections.sort(this.devices,comparator);
         notifyDataSetChanged();
     }
 
     public void append(ArrayList<EquipmentListBean.DataBean.Device> devices) {
+        HashSet<EquipmentListBean.DataBean.Device> set = new HashSet<>(this.devices);
         if(filterUnknown){
             for(EquipmentListBean.DataBean.Device device:devices){
                 if(!isUnknown(device)){
-                    this.devices.add(device);
+                    set.add(device);
+//                    this.devices.add(device);
                 }
             }
         }else{
-            this.devices.addAll(devices);
+//            this.devices.addAll(devices);
+            set.addAll(devices);
         }
+        this.devices.clear();
+        this.devices.addAll(set);
+        Collections.sort(this.devices,comparator);
         notifyDataSetChanged();
     }
 
@@ -195,6 +223,7 @@ public class EquipmentAdapter extends RecyclerView.Adapter {
             this.devices.addAll(devices);
         }
 
+        Collections.sort(this.devices,comparator);
         notifyItemInserted(position);
     }
 

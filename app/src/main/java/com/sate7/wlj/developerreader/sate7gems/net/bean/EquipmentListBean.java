@@ -16,6 +16,7 @@ import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class EquipmentListBean {
@@ -99,7 +100,7 @@ public class EquipmentListBean {
             this.devices = devices;
         }
 
-        public static class Device implements Parcelable {
+        public static class Device implements Parcelable, Comparable<Device> {
             /**
              * imei : 867935030003213
              * build_number :
@@ -229,7 +230,7 @@ public class EquipmentListBean {
             }
 
             public String getTag() {
-                return TextUtils.isEmpty(tag) ? "unknown" : tag;
+                return TextUtils.isEmpty(tag) ? tagQx : tag;
             }
 
             public void setTag(String tag) {
@@ -288,15 +289,29 @@ public class EquipmentListBean {
                     return false;
                 }else{
                     Device device = (Device) obj;
-                    XLog.dReport("Device equals ... " + device.getImei() + "," + this.imei);
-                    return device.getImei().equals(imei);
+                    XLog.dReport("Device equals ww ... " + device.getTag() + "," + this.tag);
+                    boolean imeiEquals = device.getImei().equals(imei);
+                    if(imeiEquals && device.getBindNumber() != null && bindNumber != null){
+                        XLog.dReport("Device equals aa22 ... " + device.getTag() + "," + this.tag);
+                        device.bindNumber = "1234";
+                    }else if(imeiEquals && device.getTag() != null && tag!= null){
+                        XLog.dReport("Device equals bb22 ... " + device.getTag() + "," + this.tag);
+                        device.tag = "ABC";
+                    }
+                    return imeiEquals;
                 }
             }
 
             @Override
             public int hashCode() {
-                XLog.dReport("Device hashCode ... " + this.imei);
+//                XLog.dReport("Device hashCode ... " + this.imei);
                 return imei.hashCode();
+            }
+
+            @Override
+            public int compareTo(Device o) {
+//                return lastUpdateTime.compareTo(o.getLastUpdateTime());
+                return o.getLastUpdateTime().compareTo(lastUpdateTime);
             }
         }
     }

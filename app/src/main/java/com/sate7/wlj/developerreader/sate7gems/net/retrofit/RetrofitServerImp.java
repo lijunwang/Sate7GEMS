@@ -75,7 +75,7 @@ public class RetrofitServerImp implements Server {
                     if (loginBean.getCode() == 0) {
                         saveNamePwd(userName, pwd);
                         Sate7EGMSApplication.setToken(loginBean.getData().getToken());
-                        Sate7EGMSApplication.setOrgCode(loginBean.getData().getOrgs().get(0).getOrgCode());
+//                        Sate7EGMSApplication.setOrgCode(loginBean.getData().getOrgs().get(0).getOrgCode());
                     }
                     if (loginBean.getCode() == 0 && callBack != null) {
                         callBack.onLoginSuccess(loginBean.getData().getToken());
@@ -293,6 +293,7 @@ public class RetrofitServerImp implements Server {
             imeis.add(tmp);
         }
         jsonObject.add("imeis", imeis);
+        jsonObject.addProperty("monitor_fence_type", "ACCESS_EXIT_FENCE");
         String body = jsonObject.toString();
         log("create fence body = " + body);
         Call<SimplestResponseBean> create = mGEMSServer.createFence(Sate7EGMSApplication.getToken(), body);
@@ -328,16 +329,16 @@ public class RetrofitServerImp implements Server {
         jsonObject.addProperty("name", name);
         jsonObject.addProperty("start_date", startTime);
         jsonObject.addProperty("end_date", endTime);
-//        jsonObject.addProperty("day_type", "WEEK");
-//        JsonArray days = new JsonArray();
-//        days.add(1);
-//        days.add(2);
-//        days.add(3);
-//        days.add(4);
-//        days.add(5);
-//        days.add(6);
-//        days.add(7);
-//        jsonObject.add("days", days);
+        jsonObject.addProperty("day_type", "WEEK");
+        JsonArray days = new JsonArray();
+        days.add(1);
+        days.add(2);
+        days.add(3);
+        days.add(4);
+        days.add(5);
+        days.add(6);
+        days.add(7);
+        jsonObject.add("days", days);
         jsonObject.addProperty("interval", "ONE_SHOT");
         jsonObject.addProperty("mtd", "STATE");
         JsonObject labels = new JsonObject();
@@ -350,6 +351,7 @@ public class RetrofitServerImp implements Server {
             imeis.add(tmp);
         }
         jsonObject.add("imeis", imeis);
+        jsonObject.addProperty("monitor_fence_type", "ACCESS_EXIT_FENCE");
         String body = jsonObject.toString();
         log("create state body = " + body);
         /*Call<ResponseBody> call = mGEMSServer.createStateMonitor(Sate7EGMSApplication.getToken(), body);

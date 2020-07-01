@@ -124,7 +124,7 @@ public class FenceFragment extends BaseFragment implements View.OnClickListener,
                 break;
 
             case R.id.createFence:
-                if (createFencePop == null) {
+                /*if (createFencePop == null) {
                     createFencePop = new XPopup.Builder(getContext()).
                             offsetX(-20).
                             atView(binding.createFence).
@@ -132,7 +132,8 @@ public class FenceFragment extends BaseFragment implements View.OnClickListener,
                                     getResources().getString(R.string.monitor_fence),
                                     getContext(), this));
                 }
-                createFencePop.show();
+                createFencePop.show();*/
+                startCreateFenceAct(Constants.MONITOR_GEOFENCE);
                 break;
         }
     }

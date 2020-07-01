@@ -1,0 +1,2 @@
+一、BufferedWriter 要flush,不然不會發出來。同時如果接收的是BufferedReader,要注意
+一定要在后面加"\r"或者"\n"
